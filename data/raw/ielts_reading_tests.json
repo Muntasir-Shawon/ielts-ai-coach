@@ -1,0 +1,108 @@
+[
+  {
+    "test_id": "READ-001",
+    "title": "The Architecture of Ancient Roman Aqueducts",
+    "passage": "The roman aqueducts stand among the greatest engineering feats of the classical era. Spanning hundreds of kilometers across provinces of the empire, these gravity-driven conduit channels conveyed fresh mountain spring water to densely populated municipal centers, public baths, and industrial fountains.\n\nContrary to popular belief, only a fraction of an aqueduct network was supported by grand stone arches; over eighty percent of the overall distance flowed underground through terracotta pipes and masonry-lined subterranean tunnels. This subterranean alignment insulated municipal drinking water from environmental contamination, evaporation during Mediterranean summers, and deliberate enemy sabotage.\n\nEngineers, known as libratores, relied on specialized optical instruments including the chorobates\u2014a twenty-foot wooden leveling bench equipped with plumb bobs and water channels\u2014to calculate delicate gradient declines averaging merely one meter per kilometer. Such minimal gradients maintained a steady flow rate without inducing hydraulic erosion along the channel walls.",
+    "topic": "history_engineering",
+    "difficulty": "medium",
+    "questions": [
+      {
+        "question_id": "R1-Q1",
+        "question_type": "true_false_not_given",
+        "question": "Most Roman aqueduct mileage was suspended on above-ground masonry arches.",
+        "options": [
+          "TRUE",
+          "FALSE",
+          "NOT GIVEN"
+        ],
+        "answer": "FALSE",
+        "explanation": "The text explicitly reveals that 'over eighty percent of the overall distance flowed underground through terracotta pipes and masonry-lined subterranean tunnels'."
+      },
+      {
+        "question_id": "R1-Q2",
+        "question_type": "multiple_choice",
+        "question": "Why did Roman engineers prioritize subterranean water channels?",
+        "options": [
+          "A. Because stone arches were prohibitively expensive to build",
+          "B. To protect water from evaporation, pollution, and military disruption",
+          "C. Because slave labor was prohibited on above-ground construction",
+          "D. To conceal the location of mountain springs from competing tribes"
+        ],
+        "answer": "B",
+        "explanation": "The passage confirms subterranean alignment insulated drinking water from environmental contamination, summer evaporation, and enemy sabotage."
+      },
+      {
+        "question_id": "R1-Q3",
+        "question_type": "sentence_completion",
+        "question": "Roman engineers calculated channel gradients using an instrument called the ________.",
+        "options": [
+          "chorobates",
+          "libratores",
+          "terracotta",
+          "aqueduct"
+        ],
+        "answer": "chorobates",
+        "explanation": "Engineers used the chorobates\u2014a twenty-foot wooden leveling bench\u2014to calculate gradient declines."
+      },
+      {
+        "question_id": "R1-Q4",
+        "question_type": "true_false_not_given",
+        "question": "The Roman senate directly financed the construction of every provincial aqueduct.",
+        "options": [
+          "TRUE",
+          "FALSE",
+          "NOT GIVEN"
+        ],
+        "answer": "NOT GIVEN",
+        "explanation": "The passage discusses engineering techniques and libratores, but never mentions whether the Roman senate financed every provincial aqueduct."
+      }
+    ]
+  },
+  {
+    "test_id": "READ-002",
+    "title": "Bioluminescence: The Living Light of the Ocean",
+    "passage": "Bioluminescence is the biochemical generation and emission of cold light by living organisms. In marine environments, where solar penetration ceases completely below depths of one thousand meters\u2014the aphotic zone\u2014bioluminescence constitutes the primary mode of illumination and interaction.\n\nThe chemical reaction requires two fundamental agents: the light-emitting pigment luciferin and an enzymatic catalyst termed luciferase. When catalyzed in the presence of dissolved oxygen, luciferin oxidizes, yielding oxyluciferin in an electronically excited state. As oxyluciferin relaxes to its ground energy state, it emits photons with extraordinary efficiency; almost 98% of the reaction energy converts directly into light, with virtually zero thermal loss.\n\nMarine organisms deploy bioluminescence for diverse evolutionary imperatives. Predators such as the deep-sea anglerfish dangle luminous photophores to lure unsuspecting prey into lethal range. Conversely, midwater squid employ counterillumination: by emitting downward light that matches the intensity of sunlight penetrating from above, they effectively eradicate their silhouette from predators lurking below.",
+    "topic": "marine_biology",
+    "difficulty": "hard",
+    "questions": [
+      {
+        "question_id": "R2-Q1",
+        "question_type": "multiple_choice",
+        "question": "What is notable about the biochemical light emission of oxyluciferin?",
+        "options": [
+          "A. It operates exclusively in the presence of carbon dioxide",
+          "B. It emits substantial heat to warm cold-blooded sea creatures",
+          "C. Nearly 98% of the energy converts into light with almost no heat loss",
+          "D. It can only occur in shallow coastal waters exposed to sunlight"
+        ],
+        "answer": "C",
+        "explanation": "The passage notes that almost 98% of reaction energy converts directly into light with virtually zero thermal loss."
+      },
+      {
+        "question_id": "R2-Q2",
+        "question_type": "true_false_not_given",
+        "question": "Counterillumination is used by midwater squid to eliminate their visible shadow from predators beneath them.",
+        "options": [
+          "TRUE",
+          "FALSE",
+          "NOT GIVEN"
+        ],
+        "answer": "TRUE",
+        "explanation": "Midwater squid emit light matching downwelling sunlight, effectively eradicating their silhouette from predators lurking below."
+      },
+      {
+        "question_id": "R2-Q3",
+        "question_type": "matching_headings",
+        "question": "Which biological purpose matches the behavior of the deep-sea anglerfish?",
+        "options": [
+          "A. Evading predators via counterillumination",
+          "B. Attracting and capturing prey",
+          "C. Navigating through underwater cave networks",
+          "D. Generating thermal energy for reproduction"
+        ],
+        "answer": "B",
+        "explanation": "Anglerfish dangle luminous photophores to lure unsuspecting prey into lethal striking distance."
+      }
+    ]
+  }
+]

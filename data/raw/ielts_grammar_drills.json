@@ -1,0 +1,77 @@
+[
+  {
+    "drill_id": "GRM-001",
+    "category": "Articles (a/an/the)",
+    "difficulty": "medium",
+    "instruction": "Identify the sentence with the correct article usage.",
+    "question": "Which sentence correctly uses articles in an IELTS academic style?",
+    "options": [
+      "A. Government should invest money in the education of young generations.",
+      "B. The government should invest money in the education of younger generations.",
+      "C. A government should invest the money in an education of young.",
+      "D. Governments should invest a money in education of younger generations."
+    ],
+    "correct_option": "B",
+    "rule_explanation": "'The government' refers to a specific governing body, and 'the education of...' requires a definite article before a qualified noun phrase."
+  },
+  {
+    "drill_id": "GRM-002",
+    "category": "Subject-Verb Agreement",
+    "difficulty": "hard",
+    "instruction": "Select the option with flawless subject-verb concord.",
+    "question": "The percentage of employees who commute by public transport ________ increased significantly since 2015.",
+    "options": [
+      "A. have",
+      "B. has",
+      "C. having",
+      "D. are"
+    ],
+    "correct_option": "B",
+    "rule_explanation": "The head noun of the subject phrase is 'The percentage' (singular), which takes the singular verb 'has', not 'have'."
+  },
+  {
+    "drill_id": "GRM-003",
+    "category": "Conditionals & Hypotheticals",
+    "difficulty": "hard",
+    "instruction": "Select the grammatically accurate conditional structure.",
+    "question": "If civic authorities ________ earlier preventative measures, catastrophic flooding could have been averted.",
+    "options": [
+      "A. had enacted",
+      "B. enacted",
+      "C. would have enacted",
+      "D. have enacted"
+    ],
+    "correct_option": "A",
+    "rule_explanation": "Third conditional requires 'If + past perfect' in the if-clause and 'would/could have + past participle' in the main clause."
+  },
+  {
+    "drill_id": "GRM-004",
+    "category": "Passive Voice & Objectivity",
+    "difficulty": "medium",
+    "instruction": "Select the sentence exhibiting formal academic passive reporting.",
+    "question": "Which sentence presents findings in the most objective academic IELTS style?",
+    "options": [
+      "A. We saw that the carbon emissions doubled in five years.",
+      "B. Carbon emissions were observed to have doubled over the five-year timeframe.",
+      "C. You can observe carbon emissions double over five years.",
+      "D. People observed carbon emissions doubling in five years."
+    ],
+    "correct_option": "B",
+    "rule_explanation": "Academic Task 1 reports avoid first-person pronouns ('We', 'You') in favor of passive impersonal constructions ('were observed to have doubled')."
+  },
+  {
+    "drill_id": "GRM-005",
+    "category": "Complex Sentences & Relative Clauses",
+    "difficulty": "hard",
+    "instruction": "Choose the correctly punctuated non-defining relative clause.",
+    "question": "Solar energy ________ has emerged as a cornerstone of sustainable urban planning.",
+    "options": [
+      "A. which harnesses photovoltaic cells",
+      "B. , which harnesses photovoltaic cells,",
+      "C. that harnesses photovoltaic cells,",
+      "D. , that harnesses photovoltaic cells"
+    ],
+    "correct_option": "B",
+    "rule_explanation": "Non-defining relative clauses provide supplementary information, use 'which' (never 'that'), and must be enclosed in commas."
+  }
+]

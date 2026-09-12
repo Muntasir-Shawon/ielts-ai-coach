@@ -1,0 +1,149 @@
+[
+  {
+    "id": "VOC-001",
+    "word": "Ubiquitous",
+    "part_of_speech": "adjective",
+    "band_level": "Band 8-9",
+    "topic": "technology_society",
+    "definition": "Present, appearing, or found everywhere simultaneously.",
+    "example_sentence": "Smartphones have transformed into ubiquitous devices across both developed and emerging economies.",
+    "collocations": [
+      "ubiquitous presence",
+      "ubiquitous technology",
+      "ubiquitous influence"
+    ],
+    "synonyms": [
+      "omnipresent",
+      "pervasive",
+      "universal"
+    ],
+    "antonyms": [
+      "rare",
+      "scarce",
+      "localized"
+    ]
+  },
+  {
+    "id": "VOC-002",
+    "word": "Mitigate",
+    "part_of_speech": "verb",
+    "band_level": "Band 7-8",
+    "topic": "environment_policy",
+    "definition": "To make something less severe, harmful, or painful.",
+    "example_sentence": "Subsidizing public mass transit serves to mitigate carbon emissions in heavily congested metropolises.",
+    "collocations": [
+      "mitigate risks",
+      "mitigate the impact of",
+      "mitigate global warming"
+    ],
+    "synonyms": [
+      "alleviate",
+      "attenuate",
+      "lessen",
+      "diminish"
+    ],
+    "antonyms": [
+      "exacerbate",
+      "aggravate",
+      "intensify"
+    ]
+  },
+  {
+    "id": "VOC-003",
+    "word": "Discrepancy",
+    "part_of_speech": "noun",
+    "band_level": "Band 7-8",
+    "topic": "academic_data",
+    "definition": "A lack of compatibility or similarity between two or more facts.",
+    "example_sentence": "Examiners noticed a marked discrepancy between the reported survey outcomes and actual economic figures.",
+    "collocations": [
+      "glaring discrepancy",
+      "marked discrepancy",
+      "discrepancy between"
+    ],
+    "synonyms": [
+      "inconsistency",
+      "divergence",
+      "variance",
+      "disparity"
+    ],
+    "antonyms": [
+      "congruence",
+      "consistency",
+      "alignment"
+    ]
+  },
+  {
+    "id": "VOC-004",
+    "word": "Exacerbate",
+    "part_of_speech": "verb",
+    "band_level": "Band 8-9",
+    "topic": "society_health",
+    "definition": "To make a problem, bad situation, or negative feeling worse.",
+    "example_sentence": "Unregulated urban sprawl threatens to exacerbate existing housing shortages and transportation bottlenecks.",
+    "collocations": [
+      "exacerbate the problem",
+      "exacerbate tensions",
+      "exacerbate inequalities"
+    ],
+    "synonyms": [
+      "worsen",
+      "aggravate",
+      "inflame"
+    ],
+    "antonyms": [
+      "ameliorate",
+      "improve",
+      "soothe"
+    ]
+  },
+  {
+    "id": "VOC-005",
+    "word": "Proponent",
+    "part_of_speech": "noun",
+    "band_level": "Band 7-8",
+    "topic": "essay_argumentation",
+    "definition": "A person who advocates a theory, proposal, or course of action.",
+    "example_sentence": "Proponents of renewable subsidies argue that green technology fosters long-term macroeconomic stability.",
+    "collocations": [
+      "staunch proponent",
+      "leading proponent",
+      "proponents argue"
+    ],
+    "synonyms": [
+      "advocate",
+      "supporter",
+      "champion"
+    ],
+    "antonyms": [
+      "opponent",
+      "adversary",
+      "critic"
+    ]
+  },
+  {
+    "id": "VOC-006",
+    "word": "Substantiate",
+    "part_of_speech": "verb",
+    "band_level": "Band 8-9",
+    "topic": "academic_research",
+    "definition": "To provide evidence to support or prove the truth of an assertion.",
+    "example_sentence": "Candidates must substantiate their assertions with cogent illustrations in IELTS Writing Task 2.",
+    "collocations": [
+      "substantiate claims",
+      "substantiate assertions",
+      "substantiate findings"
+    ],
+    "synonyms": [
+      "corroborate",
+      "validate",
+      "authenticate",
+      "verify"
+    ],
+    "antonyms": [
+      "refute",
+      "disprove",
+      "debunk"
+    ]
+  }
+]

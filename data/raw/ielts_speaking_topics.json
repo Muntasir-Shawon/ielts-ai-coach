@@ -1,0 +1,68 @@
+[
+  {
+    "topic_id": "SPK-001",
+    "topic": "Hometown and Living Environment",
+    "part_1": {
+      "theme": "Your hometown",
+      "questions": [
+        "Where is your hometown located?",
+        "What do you like most about living in your hometown?",
+        "Has your hometown changed much over the past few years?",
+        "Do you think your hometown is a good place for young people to build their careers?"
+      ]
+    },
+    "part_2": {
+      "cue_card": "Describe a memorable journey you have taken.",
+      "guidelines": [
+        "Where you went and who accompanied you",
+        "What mode of transportation you used",
+        "What memorable activities you engaged in during the trip",
+        "And explain why this journey made such a lasting impression on you."
+      ],
+      "prep_time_seconds": 60,
+      "speak_time_seconds": 120
+    },
+    "part_3": {
+      "theme": "Tourism, Travel, and Cultural Exchange",
+      "questions": [
+        "How has modern air travel altered the way people perceive cultural diversity?",
+        "Do you believe mass tourism causes more economic benefits or environmental degradation to historic cities?",
+        "Should international governments regulate tourism quotas to preserve fragile ecosystems?",
+        "In what ways might virtual reality travel impact conventional tourism in the coming decades?"
+      ]
+    }
+  },
+  {
+    "topic_id": "SPK-002",
+    "topic": "Technology and Daily Communication",
+    "part_1": {
+      "theme": "Digital Devices and Screen Time",
+      "questions": [
+        "What digital devices do you use most frequently on an average day?",
+        "Did you use technology frequently when you were a child in school?",
+        "Do you prefer communicating via phone calls or text messages, and why?",
+        "How do you manage to disconnect from screens during weekends?"
+      ]
+    },
+    "part_2": {
+      "cue_card": "Describe a piece of technology or software that has significantly improved your daily productivity.",
+      "guidelines": [
+        "What kind of device or application it is",
+        "How you first discovered it and learned to use it",
+        "What key tasks or projects you utilize it for",
+        "And explain why it has become indispensable to your daily routine."
+      ],
+      "prep_time_seconds": 60,
+      "speak_time_seconds": 120
+    },
+    "part_3": {
+      "theme": "Artificial Intelligence and the Future of Society",
+      "questions": [
+        "Do you anticipate that artificial intelligence will diminish human creativity or augment it?",
+        "To what extent should school systems restrict or embrace AI tools among secondary students?",
+        "What ethical challenges arise when algorithms make judicial or hiring determinations?",
+        "How can older generations be supported in adapting to rapid technological transformations?"
+      ]
+    }
+  }
+]

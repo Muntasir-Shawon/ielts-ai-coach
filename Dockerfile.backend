@@ -1,0 +1,28 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Seed database and build vector index
+RUN python data/download_dataset.py && \
+    python data/clean_dataset.py && \
+    python data/preprocess.py && \
+    python data/build_vector_database.py && \
+    python ml/train_band_model.py && \
+    python database/init_db.py
+
+EXPOSE 8000
+
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

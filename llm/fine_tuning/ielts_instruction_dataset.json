@@ -1,0 +1,82 @@
+[
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Some people believe that artificial intelligence will replace human teachers in the future. To what extent do you agree or disagree?'",
+    "input": "In recent decades, artificial intelligence has made astounding progress in various sectors, leading some to argue that traditional educators will eventually become obsolete. While automated algorithms can deliver customized practice and rapid evaluations, I firmly disagree that AI can completely supplant human educators due to pedagogical empathy and critical guidance.",
+    "output": "Overall Band Score: 7.5\n- Task Response / Achievement: 7.5\n- Coherence and Cohesion: 7.5\n- Lexical Resource: 8.0\n- Grammatical Range and Accuracy: 7.0\n\nExaminer Summary: The candidate demonstrates technology competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Some people think that environmental problems should be solved by international governments, while others think individuals should take responsibility. Discuss both views and give your opinion.'",
+    "input": "Global warming and resource depletion represent unprecedented planetary perils. Some contend that high-level interstate accords are the solely effective recourse, whereas others assert individual lifestyle reforms hold the true solution. In my perspective, meaningful ecological restoration necessitates a symbiotic union of macro-policy regulation and grassroots civic responsibility.",
+    "output": "Overall Band Score: 8.0\n- Task Response / Achievement: 8.0\n- Coherence and Cohesion: 8.0\n- Lexical Resource: 8.5\n- Grammatical Range and Accuracy: 8.0\n\nExaminer Summary: The candidate demonstrates environment competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'In many countries, young people leave school with a lack of basic money management skills. What are the causes and what solutions can you propose?'",
+    "input": "Many students finish high school without understanding how to budget or invest savings. The primary reason is that academic curricula prioritize abstract theory over practical financial literacy. To mitigate this discrepancy, secondary institutions should integrate compulsory personal finance coursework and interactive budget simulations.",
+    "output": "Overall Band Score: 6.5\n- Task Response / Achievement: 7.0\n- Coherence and Cohesion: 6.5\n- Lexical Resource: 6.5\n- Grammatical Range and Accuracy: 6.0\n\nExaminer Summary: The candidate demonstrates education competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'More and more companies are allowing employees to work from home. Do the advantages outweigh the disadvantages?'",
+    "input": "The trend toward remote employment has burgeoned substantially. Employees experience diminished commuting exhaustion and superior autonomy. However, isolation and communication barriers pose hurdles. On balance, I believe the enhanced flexibility and operational savings outweigh the drawbacks if modern collaborative tooling is implemented.",
+    "output": "Overall Band Score: 7.0\n- Task Response / Achievement: 7.0\n- Coherence and Cohesion: 7.0\n- Lexical Resource: 7.0\n- Grammatical Range and Accuracy: 7.0\n\nExaminer Summary: The candidate demonstrates work competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Fast food is causing major health issues worldwide. Governments should impose a heavy tax on unhealthy food. Do you agree or disagree?'",
+    "input": "In today world junk food is cheap and everywhere so people eat too much. I agree government must put tax because obesity is growing fast. If price go up, citizen will buy healthy fruits and vegetables instead. This will save money for hospitals.",
+    "output": "Overall Band Score: 5.5\n- Task Response / Achievement: 6.0\n- Coherence and Cohesion: 5.0\n- Lexical Resource: 5.5\n- Grammatical Range and Accuracy: 5.0\n\nExaminer Summary: The candidate demonstrates health competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 1 essay for the prompt: 'The line graph shows renewable energy consumption in four countries between 2000 and 2020. Summarize the information by selecting and reporting the main features, and make comparisons where relevant.'",
+    "input": "The provided line chart illustrates the trajectory of renewable power usage across four distinct nations\u2014Germany, Sweden, China, and the United States\u2014spanning a twenty-year epoch from 2000 to 2020. Overall, renewable consumption exhibited an upward trend in all four countries, with Sweden consistently maintaining the preeminent position throughout the period.",
+    "output": "Overall Band Score: 8.0\n- Task Response / Achievement: 8.0\n- Coherence and Cohesion: 8.0\n- Lexical Resource: 8.0\n- Grammatical Range and Accuracy: 8.0\n\nExaminer Summary: The candidate demonstrates energy competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 1 essay for the prompt: 'The diagram illustrates the process of manufacturing recycled paper from waste paper. Summarise the information by selecting and reporting the main features.'",
+    "input": "The schematic diagram depicts the sequential stages involved in transforming collected waste paper into usable recycled sheets. In summary, the manufacturing process encompasses seven distinct operational phases, commencing with initial sorting and culminating in the compression and roll drying of fresh paper pulp.",
+    "output": "Overall Band Score: 7.0\n- Task Response / Achievement: 7.5\n- Coherence and Cohesion: 7.0\n- Lexical Resource: 7.0\n- Grammatical Range and Accuracy: 6.5\n\nExaminer Summary: The candidate demonstrates industry competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Happiness is considered important by everyone, but it is difficult to define. What factors influence happiness, and why is it hard to define?'",
+    "input": "While happiness constitutes a universal human aspiration, formulating an empirical definition remains elusive. Psychological well-being is dictated by socioeconomic stability, robust interpersonal affiliations, and personal fulfillment. It proves difficult to quantify because perceptions of contentedness are inherently subjective and culturally conditioned.",
+    "output": "Overall Band Score: 8.5\n- Task Response / Achievement: 8.5\n- Coherence and Cohesion: 8.5\n- Lexical Resource: 9.0\n- Grammatical Range and Accuracy: 8.5\n\nExaminer Summary: The candidate demonstrates society competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Analyze the socio-economic impacts of education developments in contemporary global societies.'",
+    "input": "This essay examines the significance of education within modern contemporary communities. Evidence demonstrates that addressing education issues demands concerted global coordination. Furthermore, recent empirical studies underline that systematic approaches produce optimal outcomes. In conclusion, cultivating sustainable initiatives regarding education remains vital for future generations.",
+    "output": "Overall Band Score: 7.0\n- Task Response / Achievement: 6.5\n- Coherence and Cohesion: 6.5\n- Lexical Resource: 6.5\n- Grammatical Range and Accuracy: 7.5\n\nExaminer Summary: The candidate demonstrates education competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 1 essay for the prompt: 'Analyze the socio-economic impacts of health developments in contemporary global societies.'",
+    "input": "This essay examines the significance of health within modern contemporary communities. Evidence demonstrates that addressing health issues demands concerted global coordination. Furthermore, recent empirical studies underline that systematic approaches produce optimal outcomes. In conclusion, cultivating sustainable initiatives regarding health remains vital for future generations.",
+    "output": "Overall Band Score: 8.0\n- Task Response / Achievement: 7.5\n- Coherence and Cohesion: 8.0\n- Lexical Resource: 8.5\n- Grammatical Range and Accuracy: 8.0\n\nExaminer Summary: The candidate demonstrates health competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Analyze the socio-economic impacts of technology developments in contemporary global societies.'",
+    "input": "This essay examines the significance of technology within modern contemporary communities. Evidence demonstrates that addressing technology issues demands concerted global coordination. Furthermore, recent empirical studies underline that systematic approaches produce optimal outcomes. In conclusion, cultivating sustainable initiatives regarding technology remains vital for future generations.",
+    "output": "Overall Band Score: 8.0\n- Task Response / Achievement: 8.0\n- Coherence and Cohesion: 8.0\n- Lexical Resource: 7.5\n- Grammatical Range and Accuracy: 7.5\n\nExaminer Summary: The candidate demonstrates technology competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Analyze the socio-economic impacts of work developments in contemporary global societies.'",
+    "input": "This essay examines the significance of work within modern contemporary communities. Evidence demonstrates that addressing work issues demands concerted global coordination. Furthermore, recent empirical studies underline that systematic approaches produce optimal outcomes. In conclusion, cultivating sustainable initiatives regarding work remains vital for future generations.",
+    "output": "Overall Band Score: 5.5\n- Task Response / Achievement: 5.5\n- Coherence and Cohesion: 5.0\n- Lexical Resource: 5.5\n- Grammatical Range and Accuracy: 5.5\n\nExaminer Summary: The candidate demonstrates work competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Analyze the socio-economic impacts of society developments in contemporary global societies.'",
+    "input": "This essay examines the significance of society within modern contemporary communities. Evidence demonstrates that addressing society issues demands concerted global coordination. Furthermore, recent empirical studies underline that systematic approaches produce optimal outcomes. In conclusion, cultivating sustainable initiatives regarding society remains vital for future generations.",
+    "output": "Overall Band Score: 8.5\n- Task Response / Achievement: 9.0\n- Coherence and Cohesion: 8.0\n- Lexical Resource: 8.5\n- Grammatical Range and Accuracy: 8.0\n\nExaminer Summary: The candidate demonstrates society competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Analyze the socio-economic impacts of travel developments in contemporary global societies.'",
+    "input": "This essay examines the significance of travel within modern contemporary communities. Evidence demonstrates that addressing travel issues demands concerted global coordination. Furthermore, recent empirical studies underline that systematic approaches produce optimal outcomes. In conclusion, cultivating sustainable initiatives regarding travel remains vital for future generations.",
+    "output": "Overall Band Score: 8.5\n- Task Response / Achievement: 9.0\n- Coherence and Cohesion: 8.5\n- Lexical Resource: 8.0\n- Grammatical Range and Accuracy: 8.5\n\nExaminer Summary: The candidate demonstrates travel competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 1 essay for the prompt: 'Analyze the socio-economic impacts of environment developments in contemporary global societies.'",
+    "input": "This essay examines the significance of environment within modern contemporary communities. Evidence demonstrates that addressing environment issues demands concerted global coordination. Furthermore, recent empirical studies underline that systematic approaches produce optimal outcomes. In conclusion, cultivating sustainable initiatives regarding environment remains vital for future generations.",
+    "output": "Overall Band Score: 6.5\n- Task Response / Achievement: 6.0\n- Coherence and Cohesion: 6.5\n- Lexical Resource: 6.5\n- Grammatical Range and Accuracy: 6.5\n\nExaminer Summary: The candidate demonstrates environment competence with appropriate structure."
+  },
+  {
+    "instruction": "You are an IELTS Writing Examiner. Evaluate this Task 2 essay for the prompt: 'Analyze the socio-economic impacts of culture developments in contemporary global societies.'",
+    "input": "This essay examines the significance of culture within modern contemporary communities. Evidence demonstrates that addressing culture issues demands concerted global coordination. Furthermore, recent empirical studies underline that systematic approaches produce optimal outcomes. In conclusion, cultivating sustainable initiatives regarding culture remains vital for future generations.",
+    "output": "Overall Band Score: 5.0\n- Task Response / Achievement: 4.5\n- Coherence and Cohesion: 4.5\n- Lexical Resource: 5.5\n- Grammatical Range and Accuracy: 4.5\n\nExaminer Summary: The candidate demonstrates culture competence with appropriate structure."
+  }
+]

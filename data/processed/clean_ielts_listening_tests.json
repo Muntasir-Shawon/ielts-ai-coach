@@ -1,0 +1,77 @@
+[
+  {
+    "test_id": "LIST-001",
+    "section": 1,
+    "topic": "community_registration",
+    "audio_title": "City Community Sports Centre Registration",
+    "audio_url": "https://assets.ieltsaicoach.com/audio/section1_sports_reg.mp3",
+    "transcript_cue": "Receptionist: Good morning, City Sports Centre. How can I help you today? Caller: Hello, I would like to inquire about becoming a member of the badminton and swimming club for the autumn session...",
+    "questions": [
+      {
+        "question_id": "L1-Q1",
+        "question_type": "form_completion",
+        "question": "Applicant surname: ________",
+        "answer": "Henderson",
+        "options": [],
+        "explanation": "Caller clarifies: 'My first name is Sarah, and the surname is Henderson, that's H-E-N-D-E-R-S-O-N'."
+      },
+      {
+        "question_id": "L1-Q2",
+        "question_type": "multiple_choice",
+        "question": "Which membership tier has the applicant selected?",
+        "options": [
+          "A. Gold All-Inclusive",
+          "B. Off-Peak Weekend",
+          "C. Silver Racquet & Swim",
+          "D. Student Concession"
+        ],
+        "answer": "C",
+        "explanation": "The applicant states: 'I only need court access and pool sessions on weekdays, so Silver Racquet & Swim is ideal'."
+      },
+      {
+        "question_id": "L1-Q3",
+        "question_type": "form_completion",
+        "question": "Monthly membership subscription fee: \u00a3________",
+        "answer": "45",
+        "options": [],
+        "explanation": "Receptionist states: 'The standard rate for Silver is 45 pounds per calendar month'."
+      }
+    ]
+  },
+  {
+    "test_id": "LIST-002",
+    "section": 4,
+    "topic": "academic_lecture",
+    "audio_title": "Academic Lecture: Urban Heat Island Effect",
+    "audio_url": "https://assets.ieltsaicoach.com/audio/section4_urban_heat.mp3",
+    "transcript_cue": "Professor: Welcome back, everyone. Today we are exploring the urban heat island phenomenon, where metropolitan landscapes experience significantly elevated ambient temperatures compared to adjacent rural peripheries...",
+    "questions": [
+      {
+        "question_id": "L2-Q1",
+        "question_type": "sentence_completion",
+        "question": "Dark asphalt surfaces exhibit a low ________, absorbing high levels of solar radiation.",
+        "answer": "albedo",
+        "options": [
+          "albedo",
+          "permeability",
+          "conductivity",
+          "density"
+        ],
+        "explanation": "Professor notes: 'Impermeable asphalt and concrete pavements feature an exceptionally low albedo, causing intense heat retention'."
+      },
+      {
+        "question_id": "L2-Q2",
+        "question_type": "multiple_choice",
+        "question": "What is identified as the most effective municipal countermeasure?",
+        "options": [
+          "A. Banning diesel vehicle transportation",
+          "B. Implementing green vegetated roofs and reflective pavements",
+          "C. Relocating all industrial centers outside municipal zones",
+          "D. Artificial cloud seeding during summer heatwaves"
+        ],
+        "answer": "B",
+        "explanation": "The lecture points out that vegetated roofs coupled with high-reflectance pavements yield the most measurable mitigation."
+      }
+    ]
+  }
+]
