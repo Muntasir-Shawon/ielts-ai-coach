@@ -33,10 +33,11 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    assigned_role = "admin" if (req.role == "admin" or "admin@" in req.email) else "learner"
+    # Strictly enforce only one administrator in the system: admin@ielts.com
+    assigned_role = "admin" if req.email.lower() == "admin@ielts.com" else "learner"
 
     user = User(
-        email=req.email,
+        email=req.email.lower(),
         hashed_password=hash_password(req.password),
         full_name=req.full_name,
         target_band=req.target_band,

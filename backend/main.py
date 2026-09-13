@@ -25,7 +25,8 @@ from backend.routers import (
     progress_router,
     vocabulary_router,
     grammar_router,
-    admin_router
+    admin_router,
+    realtime_router
 )
 
 app = FastAPI(
@@ -57,6 +58,7 @@ app.include_router(progress_router.router)
 app.include_router(vocabulary_router.router)
 app.include_router(grammar_router.router)
 app.include_router(admin_router.router)
+app.include_router(realtime_router.router)
 
 @app.get("/")
 def root():
