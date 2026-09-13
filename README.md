@@ -1,32 +1,40 @@
 # 🎓 IELTS AI Coach — Full-Stack AI-Powered Preparation Platform
 
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20TypeScript-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![RAG Vector Store](https://img.shields.io/badge/AI-RAG%20%2B%20Dense%20Embeddings-FF6F00)](https://github.com/Muntasir-Shawon/ielts-ai-coach)
-[![Tailwind CSS](https://img.shields.io/badge/Styles-Tailwind%20CSS%20v4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?style=for-the-badge&logo=githubpages&logoColor=white)](https://muntasir-shawon.github.io/ielts-ai-coach/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Scikit-Learn](https://img.shields.io/badge/ML-Scikit--Learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Styles-Tailwind%20CSS%20v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+---
+
+### 🌐 Live Web Application & Repository
+* **🚀 Live Website (Click to Launch)**: **[https://muntasir-shawon.github.io/ielts-ai-coach/](https://muntasir-shawon.github.io/ielts-ai-coach/)**
+* **📂 GitHub Repository**: **[https://github.com/Muntasir-Shawon/ielts-ai-coach](https://github.com/Muntasir-Shawon/ielts-ai-coach)**
 
 > **IELTS AI Coach** is a production-grade, full-stack web application designed for students preparing for the **IELTS Academic and General Training** examinations. The platform integrates Kaggle IELTS datasets, machine learning band score prediction, RAG-grounded tutoring, and an interactive voice-based AI speaking examiner.
 
 ---
 
 ## 📋 Table of Contents
-1. [Project Overview](#-project-overview)
-2. [Key Features](#-key-features)
-3. [System Architecture](#-system-architecture)
-4. [Technology Stack](#-technology-stack)
-5. [Dataset Information & Profiling](#-dataset-information--profiling)
-6. [Machine Learning Pipeline](#-machine-learning-pipeline)
-7. [RAG (Retrieval-Augmented Generation) Architecture](#-rag-retrieval-augmented-generation-architecture)
-8. [Fine-Tuning Architecture (LoRA / PEFT)](#-fine-tuning-architecture-lora--peft)
-9. [Voice Speaking Examiner Architecture](#-voice-speaking-examiner-architecture)
-10. [Database Design (16 Entities)](#-database-design-16-entities)
-11. [REST API Documentation](#-rest-api-documentation)
-12. [Installation & Setup](#-installation--setup)
-13. [How to Train Models & Build Embeddings](#-how-to-train-models--build-embeddings)
-14. [Docker Deployment](#-docker-deployment)
-15. [Limitations & Future Roadmap](#-limitations--future-roadmap)
+1. [Live Web Application](#-live-web-application--repository)
+2. [Project Overview](#-project-overview)
+3. [Key Features](#-key-features)
+4. [System Architecture](#-system-architecture)
+5. [Technology Stack](#-technology-stack)
+6. [Dataset Information & Profiling](#-dataset-information--profiling)
+7. [Machine Learning Pipeline](#-machine-learning-pipeline)
+8. [RAG (Retrieval-Augmented Generation) Architecture](#-rag-retrieval-augmented-generation-architecture)
+9. [Fine-Tuning Architecture (LoRA / PEFT)](#-fine-tuning-architecture-lora--peft)
+10. [Voice Speaking Examiner Architecture](#-voice-speaking-examiner-architecture)
+11. [Database Design (16 Entities)](#-database-design-16-entities)
+12. [REST API Documentation](#-rest-api-documentation)
+13. [Installation & Setup](#-installation--setup)
+14. [How to Run Locally](#-how-to-run-locally)
+15. [How to Train Models & Build Embeddings](#-how-to-train-models--build-embeddings)
+16. [Docker Deployment](#-docker-deployment)
+17. [Limitations & Future Roadmap](#-limitations--future-roadmap)
 
 ---
 
@@ -108,7 +116,7 @@ graph TD
 | **Machine Learning** | Scikit-Learn (Random Forest, Gradient Boosting, Ridge), Pandas, NumPy |
 | **AI / RAG / NLP** | Dense TF-IDF Cosine Similarity, Gemini API, OpenAI API, Rule-based Heuristic NLP Fallback |
 | **Speech Processing** | Browser Web Speech API (SpeechRecognition & SpeechSynthesis), Audio Telemetry Analyzer |
-| **DevOps & Testing** | Docker, Docker Compose, Pytest (13 E2E Tests), Flake8 |
+| **DevOps & Testing** | Docker, Docker Compose, GitHub Pages, GitHub Actions, Pytest (13 E2E Tests) |
 
 ---
 
