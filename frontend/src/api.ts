@@ -1,5 +1,6 @@
 /**
  * IELTS AI Coach — API Client with Resilient Client-Side Fallback for GitHub Pages Live Demo.
+ * Supports individual learner records, dynamic test scoring, admin panel metrics, and authentication.
  */
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -9,6 +10,284 @@ function getAuthHeaders(): HeadersInit {
   return {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {})
+  };
+}
+
+// User Record Interface
+export interface UserRecord {
+  id: number | string;
+  email: string;
+  full_name: string;
+  target_band: number;
+  exam_type: string;
+  role: "learner" | "admin";
+  created_at: string;
+  study_streak_days: number;
+  vocabulary_words_learned: number;
+  test_history: {
+    reading: Array<{ id: number; date: string; score: number; total: number; accuracy: number; estimated_band: number }>;
+    listening: Array<{ id: number; date: string; score: number; total: number; accuracy: number; estimated_band: number }>;
+    writing: Array<{ id: number; date: string; word_count: number; estimated_band: number; task: string }>;
+    speaking: Array<{ id: number; date: string; fluency: number; lexical: number; grammar: number; pronunciation: number; estimated_band: number }>;
+  };
+}
+
+// Default Seed Accounts for Instant Testing
+const DEFAULT_USERS: Record<string, UserRecord> = {
+  "newlearner@ielts.com": {
+    id: 1,
+    email: "newlearner@ielts.com",
+    full_name: "New Learner",
+    target_band: 7.5,
+    exam_type: "academic",
+    role: "learner",
+    created_at: new Date().toISOString(),
+    study_streak_days: 1,
+    vocabulary_words_learned: 0,
+    test_history: {
+      reading: [],
+      listening: [],
+      writing: [],
+      speaking: []
+    }
+  },
+  "learner.history@ielts.com": {
+    id: 2,
+    email: "learner.history@ielts.com",
+    full_name: "Alex Chen",
+    target_band: 7.5,
+    exam_type: "academic",
+    role: "learner",
+    created_at: "2026-03-01T10:00:00.000Z",
+    study_streak_days: 4,
+    vocabulary_words_learned: 24,
+    test_history: {
+      reading: [
+        { id: 101, date: "2026-03-10T14:30:00.000Z", score: 2, total: 3, accuracy: 67, estimated_band: 7.0 }
+      ],
+      listening: [
+        { id: 102, date: "2026-03-11T16:00:00.000Z", score: 2, total: 2, accuracy: 100, estimated_band: 6.5 }
+      ],
+      writing: [
+        { id: 103, date: "2026-03-12T11:20:00.000Z", word_count: 265, estimated_band: 5.5, task: "Task 2" }
+      ],
+      speaking: [
+        { id: 104, date: "2026-03-13T09:45:00.000Z", fluency: 6.5, lexical: 7.0, grammar: 6.5, pronunciation: 6.5, estimated_band: 6.0 }
+      ]
+    }
+  },
+  "admin@ielts.com": {
+    id: 3,
+    email: "admin@ielts.com",
+    full_name: "System Administrator",
+    target_band: 9.0,
+    exam_type: "academic",
+    role: "admin",
+    created_at: "2026-01-01T00:00:00.000Z",
+    study_streak_days: 14,
+    vocabulary_words_learned: 60,
+    test_history: {
+      reading: [],
+      listening: [],
+      writing: [],
+      speaking: []
+    }
+  }
+};
+
+export function getUsersDB(): Record<string, UserRecord> {
+  try {
+    const raw = localStorage.getItem("ielts_users_db");
+    if (!raw) {
+      localStorage.setItem("ielts_users_db", JSON.stringify(DEFAULT_USERS));
+      return { ...DEFAULT_USERS };
+    }
+    return JSON.parse(raw);
+  } catch {
+    return { ...DEFAULT_USERS };
+  }
+}
+
+export function saveUsersDB(db: Record<string, UserRecord>) {
+  try {
+    localStorage.setItem("ielts_users_db", JSON.stringify(db));
+  } catch (err) {
+    console.error("Failed to persist users db:", err);
+  }
+}
+
+export function getActiveUser(): UserRecord {
+  const activeEmail = (localStorage.getItem("ielts_active_email") || "newlearner@ielts.com").toLowerCase();
+  const db = getUsersDB();
+  if (db[activeEmail]) {
+    return db[activeEmail];
+  }
+  const fallbackUser: UserRecord = {
+    id: Date.now(),
+    email: activeEmail,
+    full_name: activeEmail.split("@")[0],
+    target_band: 7.5,
+    exam_type: "academic",
+    role: activeEmail.includes("admin") ? "admin" : "learner",
+    created_at: new Date().toISOString(),
+    study_streak_days: 1,
+    vocabulary_words_learned: 0,
+    test_history: { reading: [], listening: [], writing: [], speaking: [] }
+  };
+  db[activeEmail] = fallbackUser;
+  saveUsersDB(db);
+  return fallbackUser;
+}
+
+export function recordTestAttempt(
+  skill: "reading" | "listening" | "writing" | "speaking",
+  attemptData: any
+) {
+  const db = getUsersDB();
+  const user = getActiveUser();
+  if (!user.test_history) {
+    user.test_history = { reading: [], listening: [], writing: [], speaking: [] };
+  }
+  if (!user.test_history[skill]) {
+    user.test_history[skill] = [];
+  }
+  user.test_history[skill].push({
+    id: Date.now(),
+    date: new Date().toISOString(),
+    ...attemptData
+  });
+  db[user.email.toLowerCase()] = user;
+  saveUsersDB(db);
+}
+
+export function calculateUserProgress(user: UserRecord) {
+  const history = user.test_history || { reading: [], listening: [], writing: [], speaking: [] };
+  const rTests = history.reading || [];
+  const lTests = history.listening || [];
+  const wTests = history.writing || [];
+  const sTests = history.speaking || [];
+
+  const totalTests = rTests.length + lTests.length + wTests.length + sTests.length;
+
+  if (totalTests === 0) {
+    return {
+      user_id: user.id,
+      full_name: user.full_name,
+      target_band: user.target_band,
+      role: user.role,
+      overall_band: null,
+      raw_continuous_band: null,
+      skill_breakdown: {
+        reading: null,
+        listening: null,
+        writing: null,
+        speaking: null
+      },
+      weakest_skill: null,
+      strongest_skill: null,
+      study_streak_days: user.study_streak_days || 1,
+      total_tests_completed: 0,
+      vocabulary_words_learned: user.vocabulary_words_learned || 0,
+      recommendation_summary: "You haven't completed any practice exams yet. Choose any test module below to establish your initial diagnostic Band Score!",
+      recommendations: [
+        {
+          skill: "reading",
+          title: "Diagnostic Reading Test: Roman Aqueducts",
+          focus: "Academic Reading & True/False/Not Given",
+          reason: "Establish your baseline reading speed and factual verification accuracy."
+        },
+        {
+          skill: "listening",
+          title: "Diagnostic Listening Test: Section 1 Form Completion",
+          focus: "Key Detail Extraction",
+          reason: "Practice name and number recognition under authentic IELTS audio conditions."
+        },
+        {
+          skill: "writing",
+          title: "Writing Task 2: Artificial Intelligence & Education",
+          focus: "Task Response & Coherence",
+          reason: "Submit an opinion essay to receive instant multi-criteria band scoring."
+        },
+        {
+          skill: "speaking",
+          title: "Speaking Part 1 & 2 Interactive Voice Simulation",
+          focus: "Fluency & Lexical Variety",
+          reason: "Speak with our AI Examiner to assess pacing, hesitations, and pronunciation."
+        }
+      ],
+      recent_tests: []
+    };
+  }
+
+  // Calculate scores for tested skills
+  const rScore = rTests.length > 0 ? rTests[rTests.length - 1].estimated_band : null;
+  const lScore = lTests.length > 0 ? lTests[lTests.length - 1].estimated_band : null;
+  const wScore = wTests.length > 0 ? wTests[wTests.length - 1].estimated_band : null;
+  const sScore = sTests.length > 0 ? sTests[sTests.length - 1].estimated_band : null;
+
+  const validScores: number[] = [rScore, lScore, wScore, sScore].filter((s): s is number => s !== null);
+  const avg = validScores.reduce((a, b) => a + b, 0) / validScores.length;
+  // IELTS Band score rounding convention: round to nearest 0.5
+  const overallBand = Math.round(avg * 2) / 2;
+
+  const skillsWithScores = [
+    { skill: "reading", score: rScore },
+    { skill: "listening", score: lScore },
+    { skill: "writing", score: wScore },
+    { skill: "speaking", score: sScore }
+  ].filter(s => s.score !== null) as { skill: string; score: number }[];
+
+  skillsWithScores.sort((a, b) => a.score - b.score);
+  const weakestSkill = skillsWithScores[0]?.skill || "writing";
+  const strongestSkill = skillsWithScores[skillsWithScores.length - 1]?.skill || "reading";
+
+  const recentTests: any[] = [];
+  rTests.forEach((t, i) => recentTests.push({ id: `r-${i}`, skill: "reading", score: Math.round(t.accuracy), estimated_band: t.estimated_band, created_at: t.date }));
+  lTests.forEach((t, i) => recentTests.push({ id: `l-${i}`, skill: "listening", score: Math.round(t.accuracy), estimated_band: t.estimated_band, created_at: t.date }));
+  wTests.forEach((t, i) => recentTests.push({ id: `w-${i}`, skill: "writing", score: Math.round((t.estimated_band / 9) * 100), estimated_band: t.estimated_band, created_at: t.date }));
+  sTests.forEach((t, i) => recentTests.push({ id: `s-${i}`, skill: "speaking", score: Math.round((t.estimated_band / 9) * 100), estimated_band: t.estimated_band, created_at: t.date }));
+  recentTests.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  return {
+    user_id: user.id,
+    full_name: user.full_name,
+    target_band: user.target_band,
+    role: user.role,
+    overall_band: overallBand,
+    raw_continuous_band: parseFloat(avg.toFixed(2)),
+    skill_breakdown: {
+      reading: rScore,
+      listening: lScore,
+      writing: wScore,
+      speaking: sScore
+    },
+    weakest_skill: weakestSkill,
+    strongest_skill: strongestSkill,
+    study_streak_days: user.study_streak_days || 2,
+    total_tests_completed: totalTests,
+    vocabulary_words_learned: user.vocabulary_words_learned || 18,
+    recommendation_summary: `Your estimated Band is ${overallBand.toFixed(1)}. Focus on improving your ${weakestSkill} to reach your Target Band ${user.target_band.toFixed(1)}.`,
+    recommendations: [
+      {
+        skill: weakestSkill,
+        title: `Targeted ${weakestSkill.toUpperCase()} Diagnostic Practice`,
+        focus: "High-Yield Score Improvement",
+        reason: `${weakestSkill.toUpperCase()} is currently your lowest-scoring area. Focusing here will produce the highest band uplift.`
+      },
+      {
+        skill: "grammar",
+        title: "IELTS Academic Grammar Precision Drills",
+        focus: "Sentence Variety & Concord",
+        reason: "Grammatical accuracy accounts for 25% of both Writing and Speaking scores."
+      },
+      {
+        skill: "vocabulary",
+        title: "Academic Word List (AWL) Collocations",
+        focus: "Lexical Resource",
+        reason: "Using precise academic collocations boosts your band score across all modules."
+      }
+    ],
+    recent_tests: recentTests.slice(0, 5)
   };
 }
 
@@ -187,7 +466,7 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
     }
     return await res.json();
   } catch (err: any) {
-    // Graceful Fallback for static GitHub Pages deployment
+    // Graceful Client-Side Fallback for static GitHub Pages deployment
     return fallbackMockHandler(endpoint, options);
   }
 }
@@ -195,91 +474,129 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
 function fallbackMockHandler(endpoint: string, options: RequestInit) {
   const body = options.body ? JSON.parse(options.body as string) : {};
 
-  if (endpoint.includes("/api/auth/login") || endpoint.includes("/api/auth/register")) {
+  if (endpoint.includes("/api/auth/register")) {
+    const db = getUsersDB();
+    const email = (body.email || "newlearner@ielts.com").toLowerCase();
+    const role: "learner" | "admin" = body.role === "admin" ? "admin" : "learner";
+    const newUser: UserRecord = {
+      id: Date.now(),
+      email,
+      full_name: body.full_name || email.split("@")[0],
+      target_band: body.target_band || 7.5,
+      exam_type: "academic",
+      role,
+      created_at: new Date().toISOString(),
+      study_streak_days: 1,
+      vocabulary_words_learned: 0,
+      test_history: {
+        reading: [],
+        listening: [],
+        writing: [],
+        speaking: []
+      }
+    };
+    db[email] = newUser;
+    saveUsersDB(db);
+    localStorage.setItem("ielts_active_email", email);
+
     return {
-      access_token: "mock_jwt_token_demo_2026",
+      access_token: `jwt_token_${email}_${Date.now()}`,
       token_type: "bearer",
       user: {
-        id: 1,
-        email: body.email || "student@ielts.com",
-        full_name: body.full_name || "Muntasir Candidate",
-        target_band: body.target_band || 7.5,
+        id: newUser.id,
+        email: newUser.email,
+        full_name: newUser.full_name,
+        target_band: newUser.target_band,
+        exam_type: newUser.exam_type,
+        role: newUser.role
+      }
+    };
+  }
+
+  if (endpoint.includes("/api/auth/login")) {
+    const db = getUsersDB();
+    const email = (body.email || "newlearner@ielts.com").toLowerCase();
+    let user = db[email];
+    if (!user) {
+      user = {
+        id: Date.now(),
+        email,
+        full_name: body.full_name || email.split("@")[0],
+        target_band: 7.5,
         exam_type: "academic",
-        role: body.email?.includes("admin") ? "admin" : "student"
+        role: email.includes("admin") ? "admin" : "learner",
+        created_at: new Date().toISOString(),
+        study_streak_days: 1,
+        vocabulary_words_learned: 0,
+        test_history: {
+          reading: [],
+          listening: [],
+          writing: [],
+          speaking: []
+        }
+      };
+      db[email] = user;
+      saveUsersDB(db);
+    }
+    localStorage.setItem("ielts_active_email", user.email);
+
+    return {
+      access_token: `jwt_token_${user.email}_${Date.now()}`,
+      token_type: "bearer",
+      user: {
+        id: user.id,
+        email: user.email,
+        full_name: user.full_name,
+        target_band: user.target_band,
+        exam_type: user.exam_type,
+        role: user.role
       }
     };
   }
 
   if (endpoint.includes("/api/auth/me")) {
+    const user = getActiveUser();
     return {
-      id: 1,
-      email: "student@ielts.com",
-      full_name: "Muntasir Candidate",
-      target_band: 7.5,
-      exam_type: "academic",
-      role: "student"
+      id: user.id,
+      email: user.email,
+      full_name: user.full_name,
+      target_band: user.target_band,
+      exam_type: user.exam_type,
+      role: user.role,
+      created_at: user.created_at
     };
   }
 
   if (endpoint.includes("/api/progress")) {
-    return {
-      user_id: 1,
-      full_name: "Muntasir Candidate",
-      target_band: 7.5,
-      overall_band: 6.5,
-      raw_continuous_band: 6.42,
-      skill_breakdown: { reading: 7.0, listening: 6.5, writing: 5.5, speaking: 6.0 },
-      weakest_skill: "writing",
-      strongest_skill: "reading",
-      study_streak_days: 4,
-      total_tests_completed: 6,
-      vocabulary_words_learned: 24,
-      recommendation_summary: "Your strongest skill is Reading (7.0), while Writing (5.5) is your primary growth area.",
-      recommendations: [
-        {
-          skill: "writing",
-          title: "Writing Task 2 Opinion Essay Practice",
-          focus: "Task Response & Structure",
-          reason: "Your estimated Writing band is 5.5. Focusing on paragraph progression yields the fastest score uplift."
-        },
-        {
-          skill: "grammar",
-          title: "IELTS Common Grammar Traps: Articles & Subject-Verb",
-          focus: "Grammatical Accuracy",
-          reason: "Grammar accuracy directly drives your Writing and Speaking band scores."
-        },
-        {
-          skill: "speaking",
-          title: "Speaking Part 2 Long Turn Simulation",
-          focus: "Sustained Fluency & 2-Min Timer",
-          reason: "Speaking is at 6.0. Practicing continuous 2-minute cue card turns helps achieve Band 7.0+."
-        }
-      ],
-      recent_tests: [
-        { id: 101, skill: "reading", score: 85, estimated_band: 7.0, created_at: new Date().toISOString() },
-        { id: 102, skill: "writing", score: 60, estimated_band: 5.5, created_at: new Date().toISOString() }
-      ]
-    };
+    const user = getActiveUser();
+    return calculateUserProgress(user);
   }
 
   if (endpoint.includes("/api/tests/reading/submit")) {
     const totalQ = 3;
-    let correct = 0;
     const feedback = [
       { question_id: "R1-Q1", question: "Most Roman aqueduct mileage was suspended on above-ground masonry arches.", student_answer: body.answers?.["R1-Q1"] || "", correct_answer: "FALSE", is_correct: body.answers?.["R1-Q1"]?.toUpperCase() === "FALSE", explanation: "Over eighty percent flowed underground through terracotta pipes." },
       { question_id: "R1-Q2", question: "Why did Roman engineers prioritize subterranean water channels?", student_answer: body.answers?.["R1-Q2"] || "", correct_answer: "B", is_correct: body.answers?.["R1-Q2"] === "B", explanation: "Insulated drinking water from pollution, evaporation, and military sabotage." },
       { question_id: "R1-Q3", question: "Roman engineers calculated channel gradients using an instrument called the ________.", student_answer: body.answers?.["R1-Q3"] || "", correct_answer: "chorobates", is_correct: body.answers?.["R1-Q3"]?.toLowerCase() === "chorobates", explanation: "Engineers used the chorobates twenty-foot wooden leveling bench." }
     ];
-    correct = feedback.filter(f => f.is_correct).length;
-    const band = correct === 3 ? 8.0 : correct === 2 ? 6.5 : 5.0;
+    const correct = feedback.filter(f => f.is_correct).length;
+    const band = correct === 3 ? 8.0 : correct === 2 ? 6.5 : correct === 1 ? 5.0 : 4.0;
+    const accuracy = Math.round((correct / totalQ) * 100);
+
+    recordTestAttempt("reading", {
+      score: correct,
+      total: totalQ,
+      accuracy,
+      estimated_band: band
+    });
 
     return {
       test_id: body.test_id,
       correct_count: correct,
       total_questions: totalQ,
-      accuracy_percent: Math.round((correct / totalQ) * 100),
+      accuracy_percent: accuracy,
       estimated_band: band,
-      weak_question_types: ["true_false_not_given"],
+      weak_question_types: correct < 3 ? ["true_false_not_given"] : [],
       questions_feedback: feedback
     };
   }
@@ -289,12 +606,23 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
   }
 
   if (endpoint.includes("/api/tests/listening/submit")) {
+    const totalQ = 2;
+    const correct = 2;
+    const band = 8.0;
+
+    recordTestAttempt("listening", {
+      score: correct,
+      total: totalQ,
+      accuracy: 100,
+      estimated_band: band
+    });
+
     return {
       test_id: body.test_id,
-      correct_count: 2,
-      total_questions: 2,
+      correct_count: correct,
+      total_questions: totalQ,
       accuracy_percent: 100,
-      estimated_band: 8.0,
+      estimated_band: band,
       weak_question_types: [],
       questions_feedback: [
         { question_id: "L1-Q1", is_correct: true, correct_answer: "Henderson", explanation: "Caller confirmed spelling H-E-N-D-E-R-S-O-N." },
@@ -309,11 +637,17 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
 
   if (endpoint.includes("/api/writing/evaluate")) {
     const text = body.essay_text || "";
-    const words = text.trim().split(/\s+/).length;
-    const band = words >= 250 ? 7.0 : words >= 150 ? 6.0 : 5.0;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const band = words >= 250 ? 7.5 : words >= 180 ? 6.5 : words >= 100 ? 5.5 : 4.5;
+
+    recordTestAttempt("writing", {
+      word_count: words,
+      estimated_band: band,
+      task: body.task || "Task 2"
+    });
 
     return {
-      submission_id: 201,
+      submission_id: Date.now(),
       word_count: words,
       evaluation: {
         estimated_band: band,
@@ -328,8 +662,8 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
           "Appropriate paragraph organization with focused topical development."
         ],
         weaknesses: [
-          "Could deploy a greater density of Academic Word List (AWL) collocations to reach Band 7.5+.",
-          "Occasional mechanical coordination between sentences."
+          "Deploy a greater density of Academic Word List (AWL) collocations to reach higher bands.",
+          "Expand complex sentence structures with subordinate clauses."
         ],
         grammar_corrections: [
           {
@@ -372,6 +706,14 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
         is_finished: false
       };
     } else {
+      recordTestAttempt("speaking", {
+        fluency: 6.5,
+        lexical: 7.0,
+        grammar: 6.5,
+        pronunciation: 6.5,
+        estimated_band: 6.5
+      });
+
       return {
         session_id: body.session_id,
         is_finished: true,
@@ -402,6 +744,14 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
   }
 
   if (endpoint.includes("/api/speaking/finish")) {
+    recordTestAttempt("speaking", {
+      fluency: 6.5,
+      lexical: 7.0,
+      grammar: 6.5,
+      pronunciation: 6.5,
+      estimated_band: 6.5
+    });
+
     return {
       session_id: body.session_id,
       is_finished: true,
@@ -453,7 +803,7 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
 
   if (endpoint.includes("/api/ai/chat")) {
     return {
-      reply: `### IELTS Tutor Insight\n\nTo raise your IELTS band from **6.0 to 7.0+**, examiners specifically assess whether your ideas are fully substantiated with concrete examples.\n\n- In **Writing**: Ensure each body paragraph has 1 central idea, followed by an explanation, empirical example, and impact statement.\n- In **Speaking**: Expand beyond single-sentence answers. Use connective markers like *"To put it into perspective..."* or *"One notable illustration of this is..."*\n\nWould you like to practice a sample Task 2 essay prompt or Speaking Part 2 cue card?`,
+      reply: `### IELTS Tutor Insight\n\nTo raise your IELTS band to **7.0+**, examiners specifically assess whether your ideas are fully substantiated with concrete examples.\n\n- In **Writing**: Ensure each body paragraph has 1 central idea, followed by an explanation, empirical example, and impact statement.\n- In **Speaking**: Expand beyond single-sentence answers. Use connective markers like *"To put it into perspective..."* or *"One notable illustration of this is..."*\n\nWould you like to practice a sample Task 2 essay prompt or Speaking Part 2 cue card?`,
       citations: [
         { id: "AWL-001", skill: "writing", topic: "technology", score: 0.89, snippet: "Substantiate arguments with concrete academic illustrations" }
       ]
@@ -461,13 +811,31 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
   }
 
   if (endpoint.includes("/api/admin/stats")) {
+    const db = getUsersDB();
+    const usersList = Object.values(db).map(u => {
+      const prog = calculateUserProgress(u);
+      return {
+        id: u.id,
+        email: u.email,
+        full_name: u.full_name,
+        role: u.role,
+        target_band: u.target_band,
+        total_tests_completed: prog.total_tests_completed,
+        overall_band: prog.overall_band,
+        skills: prog.skill_breakdown,
+        created_at: u.created_at
+      };
+    });
+
+    const totalTestsCompleted = usersList.reduce((acc, u) => acc + u.total_tests_completed, 0);
+
     return {
       overview: {
-        registered_students: 142,
+        registered_students: usersList.length,
         total_questions_in_bank: 57,
         writing_submissions_evaluated: 218,
         speaking_sessions_conducted: 96,
-        mock_tests_completed: 312
+        mock_tests_completed: totalTestsCompleted || 312
       },
       ml_model_status: {
         model_name: "Ridge Baseline Regressor",
@@ -476,7 +844,8 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
       },
       datasets: [
         { id: 1, name: "IELTS Kaggle Official Test Bank", source: "Kaggle IELTS Corpus", record_count: 180, version: "2.0" }
-      ]
+      ],
+      registered_users: usersList
     };
   }
 

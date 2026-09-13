@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "./components/Navbar";
 import { Sidebar } from "./components/Sidebar";
-import { AuthModal } from "./components/AuthModal";
+import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ReadingPage } from "./pages/ReadingPage";
 import { ListeningPage } from "./pages/ListeningPage";
@@ -17,7 +17,7 @@ import { api } from "./api";
 export function App() {
   const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<string>("dashboard");
-  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+  const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
 
   useEffect(() => {
     checkCurrentUser();
@@ -26,14 +26,8 @@ export function App() {
   const checkCurrentUser = async () => {
     const token = localStorage.getItem("ielts_token");
     if (!token) {
-      // Auto sign in as Demo Student for seamless guest exploration
-      try {
-        const demo = await api.login({ email: "student@ielts.com", password: "password123" });
-        localStorage.setItem("ielts_token", demo.access_token);
-        setUser(demo.user);
-      } catch (err) {
-        console.warn("Demo auto-login notice:", err);
-      }
+      setUser(null);
+      setCheckingAuth(false);
       return;
     }
 
@@ -43,13 +37,37 @@ export function App() {
     } catch (err) {
       console.warn("Token expired or invalid:", err);
       localStorage.removeItem("ielts_token");
+      localStorage.removeItem("ielts_active_email");
+      setUser(null);
+    } finally {
+      setCheckingAuth(false);
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("ielts_token");
+    localStorage.removeItem("ielts_active_email");
     setUser(null);
+    setActiveTab("dashboard");
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-rose-500"></div>
+          <span className="text-xs text-slate-400">Initializing IELTS AI Coach...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Dedicated Login & Registration Page when not authenticated
+  if (!user) {
+    return <LoginPage onLoginSuccess={(u) => setUser(u)} />;
+  }
+
+  const isAdmin = user.role === "admin";
 
   const renderActivePage = () => {
     switch (activeTab) {
@@ -72,7 +90,7 @@ export function App() {
       case "practice":
         return <PracticeBankPage />;
       case "admin":
-        return <AdminPage />;
+        return isAdmin ? <AdminPage /> : <DashboardPage onNavigate={setActiveTab} />;
       default:
         return <DashboardPage onNavigate={setActiveTab} />;
     }
@@ -83,7 +101,7 @@ export function App() {
       {/* Top Navigation */}
       <Navbar
         user={user}
-        onLoginClick={() => setIsAuthOpen(true)}
+        onLoginClick={() => {}}
         onLogout={handleLogout}
         activeTab={activeTab}
       />
@@ -93,7 +111,7 @@ export function App() {
         <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          isAdmin={user?.role === "admin"}
+          isAdmin={isAdmin}
         />
 
         <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-950/60">
@@ -102,13 +120,6 @@ export function App() {
           </div>
         </main>
       </div>
-
-      {/* Authentication Modal */}
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-        onSuccess={(u) => setUser(u)}
-      />
     </div>
   );
 }

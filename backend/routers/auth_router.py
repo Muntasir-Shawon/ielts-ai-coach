@@ -16,6 +16,7 @@ class RegisterRequest(BaseModel):
     full_name: str
     target_band: float = 7.5
     exam_type: str = "academic"
+    role: str = "learner"
 
 class LoginRequest(BaseModel):
     email: EmailStr
@@ -32,23 +33,23 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    assigned_role = "admin" if (req.role == "admin" or "admin@" in req.email) else "learner"
+
     user = User(
         email=req.email,
         hashed_password=hash_password(req.password),
         full_name=req.full_name,
         target_band=req.target_band,
         exam_type=req.exam_type,
-        role="student"
+        role=assigned_role
     )
     db.add(user)
     db.commit()
     db.refresh(user)
 
-    # Create initial progress & score baseline
+    # Create initial clean progress tracking with 0 tests completed
     progress = StudyProgress(user_id=user.id, study_streak_days=1, total_tests_completed=0, vocabulary_words_learned=0)
-    scores = StudentScore(user_id=user.id, reading_band=6.0, listening_band=6.0, writing_band=6.0, speaking_band=6.0, overall_band=6.0)
     db.add(progress)
-    db.add(scores)
     db.commit()
 
     token = create_access_token({"sub": user.email, "role": user.role})

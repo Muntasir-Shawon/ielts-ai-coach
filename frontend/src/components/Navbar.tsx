@@ -1,5 +1,5 @@
 import React from "react";
-import { GraduationCap, LogIn, LogOut, User as UserIcon, Shield } from "lucide-react";
+import { GraduationCap, LogIn, LogOut, Shield, User as UserIcon } from "lucide-react";
 
 interface NavbarProps {
   user: any;
@@ -9,6 +9,8 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogout, activeTab }) => {
+  const isAdmin = user?.role === "admin";
+
   return (
     <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-6 py-3 flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -31,17 +33,25 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogout, ac
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold text-slate-200">{user.full_name || user.email}</p>
-              <p className="text-xs text-emerald-400 font-medium">Target: Band {user.target_band || 7.5}</p>
+              {!isAdmin && (
+                <p className="text-xs text-emerald-400 font-medium">Target: Band {user.target_band?.toFixed(1) || "7.5"}</p>
+              )}
             </div>
-            {user.role === "admin" && (
-              <span className="flex items-center gap-1 text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-lg">
+
+            {isAdmin ? (
+              <span className="flex items-center gap-1 text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-lg font-bold">
                 <Shield className="w-3.5 h-3.5" /> Admin
               </span>
+            ) : (
+              <span className="flex items-center gap-1 text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2.5 py-1 rounded-lg font-bold">
+                <UserIcon className="w-3.5 h-3.5" /> Learner
+              </span>
             )}
+
             <button
               onClick={onLogout}
-              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-rose-400 px-3 py-1.5 rounded-lg border border-slate-800 hover:border-rose-500/30 transition"
-              title="Logout"
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-rose-400 px-3 py-1.5 rounded-lg border border-slate-800 hover:border-rose-500/30 transition cursor-pointer"
+              title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
               <span className="hidden md:inline">Sign Out</span>
@@ -50,10 +60,10 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogout, ac
         ) : (
           <button
             onClick={onLoginClick}
-            className="flex items-center gap-2 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-xl shadow-lg shadow-rose-600/30 transition"
+            className="flex items-center gap-2 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white px-4 py-2 rounded-xl shadow-lg shadow-rose-600/30 transition cursor-pointer"
           >
             <LogIn className="w-4 h-4" />
-            <span>Sign In / Demo</span>
+            <span>Sign In</span>
           </button>
         )}
       </div>

@@ -22,11 +22,61 @@ def get_student_progress(
 ):
     progress = db.query(StudyProgress).filter(StudyProgress.user_id == current_user.id).first()
     latest_score = db.query(StudentScore).filter(StudentScore.user_id == current_user.id).order_by(StudentScore.recorded_at.desc()).first()
+    total_tests = progress.total_tests_completed if progress else 0
 
-    r_band = latest_score.reading_band if latest_score else 6.0
-    l_band = latest_score.listening_band if latest_score else 6.0
-    w_band = latest_score.writing_band if latest_score else 5.5
-    s_band = latest_score.speaking_band if latest_score else 6.0
+    if not latest_score or total_tests == 0:
+        return {
+            "user_id": current_user.id,
+            "full_name": current_user.full_name,
+            "target_band": current_user.target_band,
+            "overall_band": None,
+            "raw_continuous_band": None,
+            "skill_breakdown": {
+                "reading": None,
+                "listening": None,
+                "writing": None,
+                "speaking": None
+            },
+            "weakest_skill": None,
+            "strongest_skill": None,
+            "study_streak_days": progress.study_streak_days if progress else 1,
+            "total_tests_completed": 0,
+            "vocabulary_words_learned": progress.vocabulary_words_learned if progress else 0,
+            "recommendations": [
+                {
+                    "skill": "reading",
+                    "title": "Diagnostic Reading Test: Roman Aqueducts",
+                    "focus": "Academic Reading & True/False/Not Given",
+                    "reason": "Establish your baseline reading speed and factual verification accuracy."
+                },
+                {
+                    "skill": "listening",
+                    "title": "Diagnostic Listening Test: Section 1 Form Completion",
+                    "focus": "Key Detail Extraction",
+                    "reason": "Practice name and number recognition under authentic IELTS audio conditions."
+                },
+                {
+                    "skill": "writing",
+                    "title": "Writing Task 2: Artificial Intelligence & Education",
+                    "focus": "Task Response & Coherence",
+                    "reason": "Submit an opinion essay to receive instant multi-criteria band scoring."
+                },
+                {
+                    "skill": "speaking",
+                    "title": "Speaking Part 1 & 2 Interactive Voice Simulation",
+                    "focus": "Fluency & Lexical Variety",
+                    "reason": "Speak with our AI Examiner to assess pacing, hesitations, and pronunciation."
+                }
+            ],
+            "recommendation_summary": "You haven't completed any practice exams yet. Choose any test module to establish your initial diagnostic Band Score!",
+            "recent_tests": [],
+            "disclaimer": "AI-estimated practice score based on statistical simulation. Not an official IELTS result."
+        }
+
+    r_band = latest_score.reading_band
+    l_band = latest_score.listening_band
+    w_band = latest_score.writing_band
+    s_band = latest_score.speaking_band
 
     # Execute ML Band Predictor model inference
     student_features = {

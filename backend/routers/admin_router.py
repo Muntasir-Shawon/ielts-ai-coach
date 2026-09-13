@@ -9,7 +9,7 @@ import pickle
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database.session import get_db
-from database.models import User, Question, Dataset, WritingSubmission, SpeakingSession, TestAttempt
+from database.models import User, Question, Dataset, WritingSubmission, SpeakingSession, TestAttempt, StudyProgress, StudentScore
 from backend.auth import get_current_admin
 
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
@@ -44,6 +44,29 @@ def get_admin_system_stats(
 
     datasets = db.query(Dataset).all()
 
+    # List of all registered users with individual records
+    users = db.query(User).all()
+    users_list = []
+    for u in users:
+        prog = db.query(StudyProgress).filter(StudyProgress.user_id == u.id).first()
+        latest = db.query(StudentScore).filter(StudentScore.user_id == u.id).order_by(StudentScore.recorded_at.desc()).first()
+        users_list.append({
+            "id": u.id,
+            "email": u.email,
+            "full_name": u.full_name,
+            "role": u.role,
+            "target_band": u.target_band,
+            "total_tests_completed": prog.total_tests_completed if prog else 0,
+            "overall_band": latest.overall_band if latest else None,
+            "skills": {
+                "reading": latest.reading_band if latest else None,
+                "listening": latest.listening_band if latest else None,
+                "writing": latest.writing_band if latest else None,
+                "speaking": latest.speaking_band if latest else None,
+            },
+            "created_at": u.created_at
+        })
+
     return {
         "overview": {
             "registered_students": total_users,
@@ -63,5 +86,6 @@ def get_admin_system_stats(
                 "uploaded_at": d.uploaded_at
             }
             for d in datasets
-        ]
+        ],
+        "registered_users": users_list
     }
