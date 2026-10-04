@@ -177,3 +177,17 @@ html.dark ::-webkit-scrollbar-thumb {
 html.dark ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
+
+/* Light Theme Contrast Safety Overrides */
+html.light .text-rose-200 {
+  color: #9f1239 !important;
+}
+html.light .text-rose-300 {
+  color: #be123c !important;
+}
+html.light .text-purple-200 {
+  color: #581c87 !important;
+}
+html.light .text-purple-300 {
+  color: #6b21a8 !important;
+}

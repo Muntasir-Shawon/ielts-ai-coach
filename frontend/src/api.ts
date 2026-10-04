@@ -782,7 +782,12 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}) {
 }
 
 function fallbackMockHandler(endpoint: string, options: RequestInit) {
-  const body = options.body ? JSON.parse(options.body as string) : {};
+  let body: any = {};
+  try {
+    body = options.body ? JSON.parse(options.body as string) : {};
+  } catch (err) {
+    body = {};
+  }
 
   if (endpoint.includes("/api/auth/register")) {
     const db = getUsersDB();
@@ -1278,22 +1283,46 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
   }
 
   if (endpoint.includes("/submit-section")) {
-    const parts = endpoint.split("/");
-    const sId = parts[parts.indexOf("mock-tests") + 1];
+    let sId = "active_session";
+    try {
+      const parts = endpoint.split("/");
+      const mtIdx = parts.indexOf("mock-tests");
+      if (mtIdx !== -1 && parts[mtIdx + 1] && parts[mtIdx + 1] !== "submit-section") {
+        sId = parts[mtIdx + 1];
+      }
+    } catch {}
+    if (!sId || sId === "active_session") {
+      try {
+        const active = localStorage.getItem("ielts_active_mock_session_id");
+        if (active) sId = active;
+      } catch {}
+    }
+
     let s: any = null;
     try {
       const raw = localStorage.getItem(`ielts_mock_session_${sId}`);
       if (raw) s = JSON.parse(raw);
     } catch {}
 
+    const secName = body?.section_name || "listening";
     if (!s) {
-      s = { session_id: sId, module: "full", current_section: body.section_name, answers: {}, section_scores: {} };
+      s = {
+        session_id: sId,
+        test_type: "academic",
+        mode: "exam",
+        module: "full",
+        current_section: secName,
+        answers: {},
+        section_scores: {},
+        test_data: getClientMockPackage("academic", "full")
+      };
+    } else if (!s.test_data) {
+      s.test_data = getClientMockPackage(s.test_type || "academic", s.module || "full");
     }
 
     s.answers = s.answers || {};
-    s.answers[body.section_name] = body.answers;
+    s.answers[secName] = body?.answers || {};
 
-    const secName = body.section_name;
     let b = 7.0;
     if (secName === "listening") b = 7.5;
     else if (secName === "reading") b = 7.0;

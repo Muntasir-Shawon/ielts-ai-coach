@@ -187,8 +187,8 @@ export const ListeningPage: React.FC = () => {
                           onClick={() => handleSelectAnswer(qId, optCode)}
                           className={`text-left text-xs p-2.5 rounded-lg border transition ${
                             isSelected
-                              ? "bg-purple-600/20 border-purple-500 text-purple-200 font-semibold"
-                              : "bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-800"
+                              ? "bg-purple-600 border-purple-600 text-white font-bold shadow-md shadow-purple-900/20"
+                              : "bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                           }`}
                         >
                           {opt}
