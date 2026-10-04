@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { GraduationCap, Mail, Lock, User as UserIcon, Shield, Sparkles, ArrowRight, BookOpen, AlertCircle, CheckCircle2 } from "lucide-react";
+import { GraduationCap, Mail, Lock, User as UserIcon, Shield, Sparkles, ArrowRight, BookOpen, AlertCircle, CheckCircle2, Sun, Moon } from "lucide-react";
 import { api } from "../api";
 
 interface LoginPageProps {
   onLoginSuccess: (user: any) => void;
+  theme?: "light" | "dark";
+  onToggleTheme?: () => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, theme = "light", onToggleTheme }) => {
   const [mode, setMode] = useState<"signin" | "register">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,6 +71,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center px-4 py-8 relative overflow-hidden">
+      {/* Theme Toggle Button */}
+      {onToggleTheme && (
+        <div className="absolute top-6 right-6 z-20">
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="p-2.5 rounded-2xl border border-slate-700/80 hover:border-slate-600 bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-slate-100 transition flex items-center justify-center cursor-pointer shadow-lg backdrop-blur"
+            title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+            aria-label="Toggle Theme"
+          >
+            {theme === "light" ? (
+              <Moon className="w-5 h-5 text-slate-700" />
+            ) : (
+              <Sun className="w-5 h-5 text-amber-400" />
+            )}
+          </button>
+        </div>
+      )}
+
       {/* Ambient background lighting */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-rose-600/10 blur-3xl rounded-full pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-72 h-72 bg-blue-600/10 blur-3xl rounded-full pointer-events-none" />

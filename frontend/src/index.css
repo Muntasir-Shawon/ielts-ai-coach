@@ -1,25 +1,179 @@
 @import "tailwindcss";
 
+/* =========================================================================
+   IELTS AI COACH - DUAL THEME ENGINE (LIGHT THEME ACTIVE BY DEFAULT)
+   ========================================================================= */
+
+:root, html.light, body.light {
+  /* Slate Surface & Canvas Palette (Light Mode) */
+  --color-slate-950: #f8fafc; /* App background canvas (slate-50) */
+  --color-slate-900: #ffffff; /* Card / Panel surfaces (pure white) */
+  --color-slate-800: #f1f5f9; /* Subtle secondary panels / badge backgrounds (slate-100) */
+  --color-slate-700: #e2e8f0; /* Crisp divider borders (slate-200) */
+  --color-slate-600: #cbd5e1; /* Emphasized borders (slate-300) */
+  --color-slate-500: #94a3b8; /* Muted hints & placeholders (slate-400) */
+  --color-slate-400: #64748b; /* Highly readable secondary body text (slate-500) */
+  --color-slate-300: #334155; /* Primary body text (slate-700) */
+  --color-slate-200: #1e293b; /* Section subheadings (slate-800) */
+  --color-slate-100: #0f172a; /* Main headings (slate-900) */
+  --color-slate-50: #020617;
+
+  /* Pastel Gradient Stops for Hero Banners in Light Mode */
+  --color-rose-950: #fff1f2;
+  --color-blue-950: #eff6ff;
+  --color-purple-950: #faf5ff;
+  --color-amber-950: #fffbeb;
+  --color-emerald-950: #ecfdf5;
+
+  /* WCAG AA/AAA Compliant High-Contrast Accents for Light Mode */
+  --color-rose-400: #e11d48;
+  --color-rose-300: #be123c;
+  --color-emerald-400: #059669;
+  --color-emerald-300: #047857;
+  --color-amber-400: #d97706;
+  --color-amber-300: #b45309;
+  --color-blue-400: #2563eb;
+  --color-blue-300: #1d4ed8;
+  --color-purple-400: #7c3aed;
+  --color-purple-300: #6d28d9;
+}
+
+/* Dark Theme Support */
+html.dark, body.dark {
+  --color-slate-950: #020617;
+  --color-slate-900: #0f172a;
+  --color-slate-800: #1e293b;
+  --color-slate-700: #334155;
+  --color-slate-600: #475569;
+  --color-slate-500: #64748b;
+  --color-slate-400: #94a3b8;
+  --color-slate-300: #cbd5e1;
+  --color-slate-200: #e2e8f0;
+  --color-slate-100: #f1f5f9;
+  --color-slate-50: #f8fafc;
+
+  --color-rose-950: #4c0519;
+  --color-blue-950: #172554;
+  --color-purple-950: #3b0764;
+  --color-amber-950: #451a03;
+  --color-emerald-950: #022c22;
+
+  --color-rose-400: #fb7185;
+  --color-rose-300: #f43f5e;
+  --color-emerald-400: #34d399;
+  --color-emerald-300: #10b981;
+  --color-amber-400: #fbbf24;
+  --color-amber-300: #f59e0b;
+  --color-blue-400: #60a5fa;
+  --color-blue-300: #3b82f6;
+  --color-purple-400: #c084fc;
+  --color-purple-300: #a855f7;
+}
+
 body {
-  background-color: #020617;
-  color: #f8fafc;
+  background-color: var(--color-slate-950);
+  color: var(--color-slate-100);
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Light Mode Card Shadows */
+html.light .bg-slate-900 {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
 }
-::-webkit-scrollbar-track {
+
+html.light .shadow-2xl {
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.07), 0 8px 10px -6px rgb(0 0 0 / 0.04);
+}
+
+html.light .shadow-xl {
+  box-shadow: 0 8px 16px -4px rgb(0 0 0 / 0.06), 0 4px 6px -2px rgb(0 0 0 / 0.03);
+}
+
+html.light .shadow-lg {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
+/* Light Theme Heading Text Contrast */
+html.light h1:not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-purple"]):not([class*="text-cyan"]),
+html.light h2:not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-purple"]):not([class*="text-cyan"]),
+html.light h3:not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-purple"]):not([class*="text-cyan"]),
+html.light h4:not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-purple"]):not([class*="text-cyan"]) {
+  color: #0f172a;
+}
+
+/* Standalone text-white elements that are not colored buttons or solid badges */
+html.light .text-white:not(
+  button,
+  button *,
+  a[class*="bg-"],
+  a[class*="bg-"] *,
+  [class*="bg-rose"],
+  [class*="bg-rose"] *,
+  [class*="bg-emerald"],
+  [class*="bg-emerald"] *,
+  [class*="bg-blue"],
+  [class*="bg-blue"] *,
+  [class*="bg-purple"],
+  [class*="bg-purple"] *,
+  [class*="bg-amber"],
+  [class*="bg-amber"] *,
+  [class*="from-rose-6"],
+  [class*="from-rose-6"] *,
+  [class*="from-rose-7"],
+  [class*="from-rose-7"] *,
+  [class*="from-blue-6"],
+  [class*="from-blue-6"] *,
+  [class*="from-purple-6"],
+  [class*="from-purple-6"] *
+) {
+  color: #0f172a;
+}
+
+/* Form Controls in Light Theme */
+html.light input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.light textarea,
+html.light select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Hover text readability in Light Theme */
+html.light .hover\:text-white:hover {
+  color: #0f172a !important;
+}
+html.light .group:hover .group-hover\:text-white {
+  color: #0f172a !important;
+}
+
+/* Light Theme Scrollbars */
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark Theme Scrollbars */
+html.dark ::-webkit-scrollbar-track {
   background: #0f172a;
 }
-::-webkit-scrollbar-thumb {
+html.dark ::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
+html.dark ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }

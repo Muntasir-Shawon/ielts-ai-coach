@@ -22,6 +22,29 @@ export function App() {
   const [selectedSessionId, setSelectedSessionId] = useState<string | undefined>(undefined);
   const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
 
+  // Light Theme is active by default
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    const saved = localStorage.getItem("ielts_theme");
+    return saved === "dark" ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+    localStorage.setItem("ielts_theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   useEffect(() => {
     checkCurrentUser();
   }, []);
@@ -67,7 +90,7 @@ export function App() {
 
   // Dedicated Login & Registration Page when not authenticated
   if (!user) {
-    return <LoginPage onLoginSuccess={(u) => setUser(u)} />;
+    return <LoginPage onLoginSuccess={(u) => setUser(u)} theme={theme} onToggleTheme={toggleTheme} />;
   }
 
   const isAdmin = user.role === "admin";
@@ -119,6 +142,8 @@ export function App() {
         onLoginClick={() => {}}
         onLogout={handleLogout}
         activeTab={activeTab}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Main Body with Sidebar + Content */}

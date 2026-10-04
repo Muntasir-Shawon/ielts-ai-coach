@@ -363,8 +363,8 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
                 onClick={() => setTestType("academic")}
                 className={`p-5 rounded-2xl border text-left transition-all ${
                   testType === "academic"
-                    ? "bg-rose-500/15 border-rose-500 ring-2 ring-rose-500/30 text-white"
-                    : "bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700"
+                    ? "bg-rose-500/15 border-rose-500 ring-2 ring-rose-500/30 text-slate-900 dark:text-white"
+                    : "bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -381,8 +381,8 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
                 onClick={() => setTestType("general_training")}
                 className={`p-5 rounded-2xl border text-left transition-all ${
                   testType === "general_training"
-                    ? "bg-rose-500/15 border-rose-500 ring-2 ring-rose-500/30 text-white"
-                    : "bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700"
+                    ? "bg-rose-500/15 border-rose-500 ring-2 ring-rose-500/30 text-slate-900 dark:text-white"
+                    : "bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -410,8 +410,8 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
                 onClick={() => setMode("exam")}
                 className={`p-5 rounded-2xl border text-left transition-all ${
                   mode === "exam"
-                    ? "bg-rose-500/15 border-rose-500 ring-2 ring-rose-500/30 text-white"
-                    : "bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700"
+                    ? "bg-rose-500/15 border-rose-500 ring-2 ring-rose-500/30 text-slate-900 dark:text-white"
+                    : "bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -433,8 +433,8 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
                 onClick={() => setMode("practice")}
                 className={`p-5 rounded-2xl border text-left transition-all ${
                   mode === "practice"
-                    ? "bg-emerald-500/15 border-emerald-500 ring-2 ring-emerald-500/30 text-white"
-                    : "bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700"
+                    ? "bg-emerald-500/15 border-emerald-500 ring-2 ring-emerald-500/30 text-slate-900 dark:text-white"
+                    : "bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -478,8 +478,8 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
                     onClick={() => setSelectedModule(m.id as any)}
                     className={`p-4 rounded-xl border flex flex-col items-center text-center transition-all ${
                       isSelected
-                        ? "bg-rose-600/20 border-rose-500 text-white ring-1 ring-rose-500/40 shadow-lg"
-                        : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
+                        ? "bg-rose-600/15 border-rose-500 text-rose-600 dark:text-white ring-1 ring-rose-500/40 shadow-lg"
+                        : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-700"
                     }`}
                   >
                     <Icon className={`w-5 h-5 mb-2 ${isSelected ? "text-rose-400" : "text-slate-500"}`} />
@@ -514,8 +514,8 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
                     onClick={() => setSelectedSet(s.id)}
                     className={`p-4 rounded-xl border text-left transition-all ${
                       isSelected
-                        ? "bg-rose-600/20 border-rose-500 text-white ring-1 ring-rose-500/40 shadow-lg"
-                        : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
+                        ? "bg-rose-600/15 border-rose-500 text-rose-600 dark:text-white ring-1 ring-rose-500/40 shadow-lg"
+                        : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-700"
                     }`}
                   >
                     <div className="text-xs font-bold mb-1 flex items-center justify-between">

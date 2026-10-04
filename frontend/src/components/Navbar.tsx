@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GraduationCap, LogIn, LogOut, Shield, User as UserIcon, Radio, Activity } from "lucide-react";
+import { GraduationCap, LogIn, LogOut, Shield, User as UserIcon, Radio, Activity, Sun, Moon } from "lucide-react";
 import { api, type RealtimeEvent } from "../api";
 
 interface NavbarProps {
@@ -7,9 +7,11 @@ interface NavbarProps {
   onLoginClick: () => void;
   onLogout: () => void;
   activeTab: string;
+  theme?: "light" | "dark";
+  onToggleTheme?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogout, activeTab }) => {
+export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogout, activeTab, theme = "light", onToggleTheme }) => {
   const isAdmin = user?.role === "admin";
   const [latestEvent, setLatestEvent] = useState<RealtimeEvent | null>(null);
 
@@ -58,7 +60,23 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogout, ac
         </div>
       )}
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        {onToggleTheme && (
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="p-2 rounded-xl border border-slate-700/80 hover:border-slate-600 bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-slate-100 transition flex items-center justify-center cursor-pointer shadow-sm"
+            title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+            aria-label="Toggle Theme"
+          >
+            {theme === "light" ? (
+              <Moon className="w-4 h-4 text-slate-700" />
+            ) : (
+              <Sun className="w-4 h-4 text-amber-400" />
+            )}
+          </button>
+        )}
+
         {user ? (
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
