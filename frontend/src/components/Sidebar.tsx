@@ -1,6 +1,8 @@
 import React from "react";
 import {
   LayoutDashboard,
+  Award,
+  History,
   BookOpen,
   Headphones,
   PenTool,
@@ -22,6 +24,8 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isAdmin }) => {
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, badge: "ML" },
+    { id: "mock-test", label: "Mock Exam Simulator", icon: Award, badge: "Exam" },
+    { id: "mock-history", label: "Mock Test History", icon: History, badge: "Report" },
     { id: "reading", label: "Reading Practice", icon: BookOpen },
     { id: "listening", label: "Listening Practice", icon: Headphones },
     { id: "writing", label: "Writing Evaluator", icon: PenTool, badge: "AI" },

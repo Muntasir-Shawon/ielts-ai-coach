@@ -52,7 +52,17 @@ Preparing for the IELTS exam requires objective, real-time feedback across four 
 
 ## 🚀 Key Features
 
-* **AI Voice Speaking Examiner**: Realistic 3-part simulation with Web Speech API STT/TTS, 60s cue card countdown timer, speech rate (WPM) tracking, and hesitation filler analysis.
+* **IELTS Mock Exam Simulator (`/mock-test`)**: Authentic computer-based examination simulator supporting both **Academic** and **General Training** across all 4 skills under official IELTS time limits.
+* **Authoritative Dual Testing Modes**:
+  - **Exam Mode**: Strict authoritative backend countdown timers, single-play audio without seeking/replay, spellcheck/hints disabled, and automatic submission upon timer expiration.
+  - **Practice Mode**: Flexible pause/resume, audio replay, immediate question explanations, and interactive AI coaching hints.
+* **Central `MockTestEngine` & Auto-Save**: Server-authoritative timer tracking (`start_time`, `end_time`), background auto-save every 5–10s, and session recovery that restores candidate answers and timers on browser refresh without state loss.
+* **Reading Split-Screen Interface**: Dual-pane scrollable reading passage on the left, interactive question bank on the right, and an active Text Highlighter tool.
+* **Writing Unified 60-Minute Engine**: Simultaneous Task 1 and Task 2 tabbed interface under a single continuous 60-minute countdown with live word counters and minimum word alerts (Task 1 $\ge 150$, Task 2 $\ge 250$).
+* **AI Voice Speaking Examiner (Dr. Harrison)**: Realistic 3-part simulation with Web Speech API STT/TTS, **60-second cue card preparation timer**, 2-minute speech turn recording, speech rate (WPM) tracking, and hesitation filler analysis.
+* **Standardized IELTS Band Rounding**: Implements the official IELTS rounding formula (half-band increments: $.25 \rightarrow .5$, $.75 \rightarrow \text{next whole band}$).
+* **Diagnostic Report & 7-Day AI Study Roadmap**: Comprehensive post-exam skill breakdowns, criteria diagnostics, strengths/weaknesses, and a customized 7-day revision schedule tailored to the candidate's weakest skill.
+* **Mock Test History (`/mock-history`)**: Complete candidate examination history log with filterable records, band scores, and instant re-opening of detailed diagnostic reports.
 * **Writing Diagnostic Evaluator**: Analytical scoring for Task 1 and Task 2, providing line-by-line grammar corrections, high-band vocabulary improvements, and Band 8.5+ model paragraphs.
 * **Academic Reading Arena**: Split-screen passage viewer with MCQ, True/False/Not Given, and Sentence Completion question engines.
 * **Listening Practice Section**: Audio stream playback with transcription cues and form/note completion scoring.
@@ -275,6 +285,12 @@ All tables are defined in `database/models.py`:
 | `GET` | `/api/grammar` | List grammar diagnostic drills |
 | `POST` | `/api/grammar/check` | Check grammar exercise answer |
 | `GET` | `/api/questions` | Filter previous IELTS questions bank |
+| `POST` | `/api/mock-tests/start` | Start full or modular Academic/GT mock test |
+| `GET` | `/api/mock-tests/{session_id}` | Authoritative session recovery on browser refresh |
+| `POST` | `/api/mock-tests/{session_id}/autosave` | Periodic background answers auto-save |
+| `POST` | `/api/mock-tests/{session_id}/submit-section` | Submit section, calculate score, advance section |
+| `GET` | `/api/mock-tests/{session_id}/result` | Full diagnostic report with official band rounding |
+| `GET` | `/api/mock-tests/history` | List candidate past mock exam attempts |
 | `GET` | `/api/admin/stats` | System and ML model diagnostic metrics |
 
 ---

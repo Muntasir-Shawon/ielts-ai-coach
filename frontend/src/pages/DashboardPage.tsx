@@ -182,6 +182,30 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         </div>
       )}
 
+      {/* Full Mock Test Simulator Feature Card */}
+      <div className="bg-gradient-to-r from-rose-950/50 via-slate-900 to-slate-900 border border-rose-500/30 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xl">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold uppercase tracking-wider">
+            <Award className="w-3.5 h-3.5" />
+            Full Computer-Based Exam Simulation
+          </div>
+          <h3 className="text-xl font-bold text-white">
+            Take Complete IELTS Mock Exam with AI Examiner
+          </h3>
+          <p className="text-xs text-slate-300 max-w-xl">
+            Authentic Academic & General Training simulations across all 4 skills. Features strict authoritative timers, auto-saving, official band rounding, and a 7-day personalized study plan.
+          </p>
+        </div>
+
+        <button
+          onClick={() => onNavigate("mock-test")}
+          className="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-xs flex items-center gap-2 shrink-0 transition shadow-lg shadow-rose-900/40 cursor-pointer"
+        >
+          <span>Launch Mock Simulator</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+
       {/* 4 Skills Diagnostic Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[

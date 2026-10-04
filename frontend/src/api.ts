@@ -3,6 +3,8 @@
  * Features cross-tab real-time sync, single administrator enforcement, and realistic learner cohort.
  */
 
+import { calculateOverallBand, generate7DayStudyPlan, getClientMockPackage } from "./mockTestData";
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 function getAuthHeaders(): HeadersInit {
@@ -1170,6 +1172,268 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
     };
   }
 
+  // MOCK TEST SIMULATOR ENDPOINTS FALLBACK
+  if (endpoint.includes("/api/mock-tests/start")) {
+    const pkg = getClientMockPackage(body?.test_type || "academic", body?.module || "full");
+    const sessionId = `mock_client_${Date.now()}`;
+    const initialSection = body?.module === "full" ? "listening" : (body?.module || "listening");
+    const durMap: Record<string, number> = { listening: 1800, reading: 3600, writing: 3600, speaking: 840 };
+    const allocatedSecs = durMap[initialSection] || 3600;
+    const now = Date.now();
+    const endTime = new Date(now + allocatedSecs * 1000).toISOString();
+
+    const sessionState = {
+      session_id: sessionId,
+      test_type: body?.test_type || "academic",
+      mode: body?.mode || "exam",
+      module: body?.module || "full",
+      status: "in_progress",
+      current_section: initialSection,
+      current_question_index: 0,
+      allocated_seconds: allocatedSecs,
+      remaining_seconds: allocatedSecs,
+      start_time: new Date(now).toISOString(),
+      end_time: endTime,
+      answers: { listening: {}, reading: {}, writing: { task_1: "", task_2: "" }, speaking: [] },
+      section_scores: {},
+      overall_band: 0.0,
+      result_summary: {},
+      test_data: pkg,
+      created_at: new Date(now).toISOString(),
+      updated_at: new Date(now).toISOString()
+    };
+
+    try {
+      localStorage.setItem(`ielts_mock_session_${sessionId}`, JSON.stringify(sessionState));
+      localStorage.setItem("ielts_active_mock_session_id", sessionId);
+
+      const rawHist = localStorage.getItem("ielts_mock_history");
+      const hist = rawHist ? JSON.parse(rawHist) : [];
+      hist.unshift({
+        session_id: sessionId,
+        test_type: sessionState.test_type,
+        mode: sessionState.mode,
+        module: sessionState.module,
+        status: "in_progress",
+        overall_band: 0.0,
+        section_scores: {},
+        created_at: sessionState.created_at,
+        updated_at: sessionState.updated_at
+      });
+      localStorage.setItem("ielts_mock_history", JSON.stringify(hist));
+    } catch {}
+
+    return sessionState;
+  }
+
+  if (endpoint.includes("/api/mock-tests/history")) {
+    try {
+      const raw = localStorage.getItem("ielts_mock_history");
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return [
+      {
+        session_id: "mock_demo_1",
+        test_type: "academic",
+        mode: "exam",
+        module: "full",
+        status: "completed",
+        overall_band: 7.5,
+        section_scores: { listening_band: 8.0, reading_band: 7.5, writing_band: 7.0, speaking_band: 7.5 },
+        created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+        updated_at: new Date(Date.now() - 86400000 * 2).toISOString()
+      },
+      {
+        session_id: "mock_demo_2",
+        test_type: "academic",
+        mode: "practice",
+        module: "reading",
+        status: "completed",
+        overall_band: 8.0,
+        section_scores: { reading_band: 8.0 },
+        created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+        updated_at: new Date(Date.now() - 86400000 * 5).toISOString()
+      }
+    ];
+  }
+
+  if (endpoint.includes("/autosave")) {
+    const parts = endpoint.split("/");
+    const sId = parts[parts.indexOf("mock-tests") + 1];
+    try {
+      const raw = localStorage.getItem(`ielts_mock_session_${sId}`);
+      if (raw) {
+        const s = JSON.parse(raw);
+        s.answers = s.answers || {};
+        s.answers[body.current_section] = body.answers;
+        s.current_section = body.current_section;
+        s.current_question_index = body.current_question_index || 0;
+        s.updated_at = new Date().toISOString();
+        localStorage.setItem(`ielts_mock_session_${sId}`, JSON.stringify(s));
+      }
+    } catch {}
+    return { status: "saved", session_id: sId, updated_at: new Date().toISOString() };
+  }
+
+  if (endpoint.includes("/submit-section")) {
+    const parts = endpoint.split("/");
+    const sId = parts[parts.indexOf("mock-tests") + 1];
+    let s: any = null;
+    try {
+      const raw = localStorage.getItem(`ielts_mock_session_${sId}`);
+      if (raw) s = JSON.parse(raw);
+    } catch {}
+
+    if (!s) {
+      s = { session_id: sId, module: "full", current_section: body.section_name, answers: {}, section_scores: {} };
+    }
+
+    s.answers = s.answers || {};
+    s.answers[body.section_name] = body.answers;
+
+    const secName = body.section_name;
+    let b = 7.0;
+    if (secName === "listening") b = 7.5;
+    else if (secName === "reading") b = 7.0;
+    else if (secName === "writing") {
+      const w2 = body.answers?.task_2 ? String(body.answers.task_2).trim().split(/\s+/).length : 0;
+      b = w2 >= 250 ? 7.5 : w2 >= 180 ? 6.5 : 5.5;
+    } else if (secName === "speaking") b = 7.0;
+
+    s.section_scores = s.section_scores || {};
+    s.section_scores[`${secName}_band`] = b;
+
+    const seq = ["listening", "reading", "writing", "speaking"];
+    const currIdx = seq.indexOf(secName);
+
+    if (s.module === "full" && currIdx >= 0 && currIdx < seq.length - 1) {
+      const nextSec = seq[currIdx + 1];
+      const durMap: Record<string, number> = { listening: 1800, reading: 3600, writing: 3600, speaking: 840 };
+      const dur = durMap[nextSec] || 3600;
+      s.current_section = nextSec;
+      s.current_question_index = 0;
+      s.allocated_seconds = dur;
+      s.remaining_seconds = dur;
+      s.start_time = new Date().toISOString();
+      s.end_time = new Date(Date.now() + dur * 1000).toISOString();
+      s.updated_at = new Date().toISOString();
+
+      try {
+        localStorage.setItem(`ielts_mock_session_${sId}`, JSON.stringify(s));
+      } catch {}
+
+      return {
+        transition: true,
+        previous_section: secName,
+        next_section: nextSec,
+        section_band: b,
+        session_state: s
+      };
+    }
+
+    // Complete test
+    s.status = "completed";
+    const lBand = s.section_scores.listening_band || 7.0;
+    const rBand = s.section_scores.reading_band || 7.0;
+    const wBand = s.section_scores.writing_band || 6.5;
+    const sBand = s.section_scores.speaking_band || 7.0;
+    const overall = calculateOverallBand(lBand, rBand, wBand, sBand);
+    s.overall_band = overall;
+
+    const summary = {
+      session_id: sId,
+      test_type: s.test_type || "academic",
+      mode: s.mode || "exam",
+      module: s.module || "full",
+      overall_band: overall,
+      skill_bands: { listening: lBand, reading: rBand, writing: wBand, speaking: sBand },
+      strongest_skill: "Listening",
+      weakest_skill: "Writing",
+      section_details: s.section_scores,
+      ai_study_plan_7day: generate7DayStudyPlan("Writing", 6.5),
+      disclaimer: "AI-estimated practice score. Not an official IELTS evaluation."
+    };
+    s.result_summary = summary;
+
+    try {
+      localStorage.setItem(`ielts_mock_session_${sId}`, JSON.stringify(s));
+      const rawHist = localStorage.getItem("ielts_mock_history");
+      if (rawHist) {
+        const hist = JSON.parse(rawHist);
+        const item = hist.find((h: any) => h.session_id === sId);
+        if (item) {
+          item.status = "completed";
+          item.overall_band = overall;
+          item.section_scores = s.section_scores;
+          localStorage.setItem("ielts_mock_history", JSON.stringify(hist));
+        }
+      }
+    } catch {}
+
+    return {
+      transition: false,
+      completed: true,
+      overall_band: overall,
+      result: summary,
+      session_state: s
+    };
+  }
+
+  if (endpoint.includes("/result")) {
+    const parts = endpoint.split("/");
+    const sId = parts[parts.indexOf("mock-tests") + 1];
+    try {
+      const raw = localStorage.getItem(`ielts_mock_session_${sId}`);
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s.result_summary && Object.keys(s.result_summary).length > 0) {
+          return s.result_summary;
+        }
+      }
+    } catch {}
+    return {
+      session_id: sId,
+      overall_band: 7.5,
+      skill_bands: { listening: 8.0, reading: 7.5, writing: 7.0, speaking: 7.5 },
+      strongest_skill: "Listening",
+      weakest_skill: "Writing",
+      ai_study_plan_7day: generate7DayStudyPlan("Writing", 7.0),
+      disclaimer: "AI-estimated practice score. Not an official IELTS evaluation."
+    };
+  }
+
+  if (endpoint.includes("/api/mock-tests/")) {
+    const parts = endpoint.split("/");
+    const sId = parts[parts.length - 1];
+    try {
+      const raw = localStorage.getItem(`ielts_mock_session_${sId}`);
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s.end_time && s.status === "in_progress") {
+          const rem = Math.max(0, Math.floor((new Date(s.end_time).getTime() - Date.now()) / 1000));
+          s.remaining_seconds = rem;
+        }
+        return s;
+      }
+    } catch {}
+
+    const pkg = getClientMockPackage("academic", "full");
+    return {
+      session_id: sId,
+      test_type: "academic",
+      mode: "exam",
+      module: "full",
+      status: "in_progress",
+      current_section: "listening",
+      current_question_index: 0,
+      allocated_seconds: 1800,
+      remaining_seconds: 1800,
+      test_data: pkg,
+      answers: {},
+      section_scores: {}
+    };
+  }
+
   return { success: true };
 }
 
@@ -1202,4 +1466,12 @@ export const api = {
   subscribeRealtimeEvents: (cb: (e: RealtimeEvent) => void) => subscribeRealtimeEvents(cb),
   broadcastRealtimeEvent: (e: RealtimeEvent) => broadcastRealtimeEvent(e),
   getLiveActivity: () => getLiveActivity(),
+
+  // MOCK TEST SIMULATOR API
+  startMockTest: (data: any) => apiRequest("/api/mock-tests/start", { method: "POST", body: JSON.stringify(data) }),
+  getMockHistory: () => apiRequest("/api/mock-tests/history"),
+  getMockSession: (sessionId: string) => apiRequest(`/api/mock-tests/${sessionId}`),
+  autosaveMockTest: (sessionId: string, data: any) => apiRequest(`/api/mock-tests/${sessionId}/autosave`, { method: "POST", body: JSON.stringify(data) }),
+  submitMockSection: (sessionId: string, data: any) => apiRequest(`/api/mock-tests/${sessionId}/submit-section`, { method: "POST", body: JSON.stringify(data) }),
+  getMockResult: (sessionId: string) => apiRequest(`/api/mock-tests/${sessionId}/result`),
 };

@@ -26,6 +26,7 @@ class User(Base):
     speaking_sessions = relationship("SpeakingSession", back_populates="user")
     test_attempts = relationship("TestAttempt", back_populates="user")
     progress = relationship("StudyProgress", back_populates="user", uselist=False)
+    mock_sessions = relationship("MockTestSession", back_populates="user")
 
 class Dataset(Base):
     __tablename__ = "datasets"
@@ -220,3 +221,27 @@ class SystemLog(Base):
     event_type = Column(String(100), nullable=False)
     details = Column(JSON, default=dict)
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+
+class MockTestSession(Base):
+    __tablename__ = "mock_test_sessions"
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(String(100), unique=True, index=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    test_type = Column(String(50), default="academic") # academic | general_training
+    mode = Column(String(50), default="exam") # exam | practice
+    module = Column(String(50), default="full") # full | listening | reading | writing | speaking
+    current_section = Column(String(50), default="listening") # listening | reading | writing | speaking
+    current_question_index = Column(Integer, default=0)
+    start_time = Column(DateTime, default=datetime.datetime.utcnow)
+    end_time = Column(DateTime, nullable=True)
+    allocated_seconds = Column(Integer, default=0)
+    status = Column(String(50), default="in_progress") # in_progress | completed | abandoned
+    test_data = Column(JSON, default=dict)
+    answers = Column(JSON, default=dict)
+    section_scores = Column(JSON, default=dict)
+    overall_band = Column(Float, default=0.0)
+    result_summary = Column(JSON, default=dict)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    user = relationship("User", back_populates="mock_sessions")

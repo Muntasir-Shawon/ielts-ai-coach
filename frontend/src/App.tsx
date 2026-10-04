@@ -12,11 +12,14 @@ import { VocabularyPage } from "./pages/VocabularyPage";
 import { GrammarPage } from "./pages/GrammarPage";
 import { PracticeBankPage } from "./pages/PracticeBankPage";
 import { AdminPage } from "./pages/AdminPage";
+import { MockTestPage } from "./pages/MockTestPage";
+import { MockHistoryPage } from "./pages/MockHistoryPage";
 import { api } from "./api";
 
 export function App() {
   const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [selectedSessionId, setSelectedSessionId] = useState<string | undefined>(undefined);
   const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
 
   useEffect(() => {
@@ -73,6 +76,18 @@ export function App() {
     switch (activeTab) {
       case "dashboard":
         return <DashboardPage onNavigate={setActiveTab} />;
+      case "mock-test":
+        return <MockTestPage onNavigate={setActiveTab} initialSessionId={selectedSessionId} />;
+      case "mock-history":
+        return (
+          <MockHistoryPage
+            onNavigate={setActiveTab}
+            onOpenSession={(sId) => {
+              setSelectedSessionId(sId);
+              setActiveTab("mock-test");
+            }}
+          />
+        );
       case "reading":
         return <ReadingPage />;
       case "listening":
