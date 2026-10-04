@@ -47,6 +47,7 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
   const [testType, setTestType] = useState<"academic" | "general_training">("academic");
   const [mode, setMode] = useState<"exam" | "practice">("exam");
   const [selectedModule, setSelectedModule] = useState<"full" | "listening" | "reading" | "writing" | "speaking">("full");
+  const [selectedSet, setSelectedSet] = useState<number>(0); // 0 = Auto-Rotate (Fresh Questions Each Exam)
 
   // Active exam session state
   const [session, setSession] = useState<any>(null);
@@ -154,10 +155,18 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
   const handleStartTest = async () => {
     setLoading(true);
     try {
+      let setId = selectedSet;
+      if (setId === 0) {
+        const lastSet = Number(localStorage.getItem("ielts_last_mock_set") || "0");
+        setId = (lastSet % 3) + 1;
+        localStorage.setItem("ielts_last_mock_set", String(setId));
+      }
+
       const newSession = await api.startMockTest({
         test_type: testType,
         mode: mode,
-        module: selectedModule
+        module: selectedModule,
+        set_id: setId
       });
 
       setSession(newSession);
@@ -167,6 +176,9 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
       setViewState("active");
       setIsPaused(false);
       setAudioPlayedOnce(false);
+      setSpeakingTurnIndex(0);
+      setTranscriptDraft("");
+      setHighlightedText([]);
     } catch (err) {
       console.error("Failed to start mock test:", err);
       alert("Failed to initialize test session. Please check your network connection.");
@@ -199,15 +211,16 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
     }
   };
 
-  const handleConfirmSubmitSection = async () => {
+  const handleConfirmSubmitSection = async (customAnswers?: any) => {
     setShowSubmitModal(false);
     if (!session) return;
 
     setLoading(true);
     try {
+      const answersToSubmit = customAnswers !== undefined ? customAnswers : (answers[currentSection] || {});
       const res = await api.submitMockSection(session.session_id, {
         section_name: currentSection,
-        answers: answers[currentSection] || {}
+        answers: answersToSubmit
       });
 
       if (res.transition && res.next_section) {
@@ -220,6 +233,9 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
       } else if (res.completed) {
         // Exam finished -> show detailed results
         setExamResult(res.result);
+        if (res.session_state) {
+          setSession(res.session_state);
+        }
         setViewState("result");
         localStorage.removeItem("ielts_active_mock_session_id");
       }
@@ -228,6 +244,28 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
       alert("Error submitting section. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Speaking turn handler that captures transcripts and advances or finalizes
+  const handleNextSpeakingTurn = () => {
+    const currentTranscript = transcriptDraft.trim() || "(Candidate vocal response recorded)";
+    const updatedSpeaking = Array.isArray(answers.speaking) ? [...answers.speaking] : [];
+    updatedSpeaking[speakingTurnIndex] = currentTranscript;
+
+    const nextAnswers = {
+      ...answers,
+      speaking: updatedSpeaking
+    };
+    setAnswers(nextAnswers);
+    setTranscriptDraft("");
+    setSpeakingPhase("prep");
+
+    if (speakingTurnIndex >= 7) {
+      // Completed all 8 turns -> finalize section immediately
+      handleConfirmSubmitSection(updatedSpeaking);
+    } else {
+      setSpeakingTurnIndex(speakingTurnIndex + 1);
     }
   };
 
@@ -453,6 +491,44 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
             </div>
           </div>
 
+          {/* Step 4: Select Question Test Set */}
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center font-black">
+                4
+              </span>
+              Select Examination Set
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              {[
+                { id: 0, label: "Auto-Rotate Sets", desc: "Fresh non-repeating questions each attempt" },
+                { id: 1, label: "Test Set 1", desc: "Standard Academic / GT Examination" },
+                { id: 2, label: "Test Set 2", desc: "Advanced Analytical Examination" },
+                { id: 3, label: "Test Set 3", desc: "Comprehensive Global Examination" }
+              ].map((s) => {
+                const isSelected = selectedSet === s.id;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setSelectedSet(s.id)}
+                    className={`p-4 rounded-xl border text-left transition-all ${
+                      isSelected
+                        ? "bg-rose-600/20 border-rose-500 text-white ring-1 ring-rose-500/40 shadow-lg"
+                        : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
+                    }`}
+                  >
+                    <div className="text-xs font-bold mb-1 flex items-center justify-between">
+                      <span>{s.label}</span>
+                      {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-rose-400" />}
+                    </div>
+                    <span className="text-[10px] text-slate-500 leading-tight block">{s.desc}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Pre-Test Checklist */}
           <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2">
             <div className="text-xs font-semibold uppercase text-slate-400 tracking-wider">
@@ -502,11 +578,12 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
   // -------------------------------------------------------------
   // VIEW 2: ACTIVE EXAMINATION INTERFACE
   // -------------------------------------------------------------
-  const testPkg = session?.test_data || {};
-  const currentSecPkg = testPkg.sections?.[currentSection] || {};
+  if (viewState === "active" && session) {
+    const testPkg = session?.test_data || {};
+    const currentSecPkg = testPkg.sections?.[currentSection] || {};
 
-  return (
-    <div className="space-y-6">
+    return (
+      <div className="space-y-6">
       {/* Authoritative Sticky Header Bar */}
       <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-wrap items-center justify-between gap-4">
         {/* Left: Test Identification */}
@@ -1044,7 +1121,9 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
                 );
               } else {
                 // Part 3: Analytical discussion
-                const q = parts[2]?.questions?.[speakingTurnIndex - 5] || parts[2]?.questions?.[0];
+                const p3Questions = parts[2]?.questions || [];
+                const p3Idx = Math.min(Math.max(0, speakingTurnIndex - 5), Math.max(0, p3Questions.length - 1));
+                const q = p3Questions[p3Idx];
                 return (
                   <div className="space-y-4">
                     <div className="text-xs font-bold uppercase text-slate-400">Part 3 Analytical Debate:</div>
@@ -1095,19 +1174,24 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
 
                 <button
                   type="button"
-                  onClick={() => {
-                    const nextIdx = speakingTurnIndex + 1;
-                    setSpeakingTurnIndex(nextIdx);
-                    setTranscriptDraft("");
-                    setSpeakingPhase("prep");
-                    if (nextIdx >= 8) {
-                      setShowSubmitModal(true);
-                    }
-                  }}
-                  className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center gap-2 transition cursor-pointer"
+                  onClick={handleNextSpeakingTurn}
+                  className={`px-6 py-2.5 rounded-xl text-white font-bold text-xs flex items-center gap-2 transition cursor-pointer shadow-lg ${
+                    speakingTurnIndex >= 7
+                      ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/30"
+                      : "bg-rose-600 hover:bg-rose-500 shadow-rose-900/30"
+                  }`}
                 >
-                  <span>Submit Turn & Continue</span>
-                  <ChevronRight className="w-4 h-4" />
+                  {speakingTurnIndex >= 7 ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Finish Speaking & View Results</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Submit Turn & Continue</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -1149,15 +1233,30 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
         </div>
       )}
     </div>
-  );
+    );
+  }
 
   // -------------------------------------------------------------
   // VIEW 3: POST-TEST DIAGNOSTIC RESULTS REPORT
   // -------------------------------------------------------------
-  if (viewState === "result" && examResult) {
-    const overall = examResult.overall_band || 7.0;
-    const skillBands = examResult.skill_bands || { listening: 7.5, reading: 7.0, writing: 6.5, speaking: 7.0 };
-    const studyPlan = examResult.ai_study_plan_7day || generate7DayStudyPlan("Writing", 6.5);
+  if (viewState === "result") {
+    const effectiveResult = examResult || session?.result_summary || {
+      session_id: session?.session_id || "completed",
+      overall_band: session?.overall_band || 7.0,
+      skill_bands: session?.section_scores ? {
+        listening: session.section_scores.listening_band || 7.5,
+        reading: session.section_scores.reading_band || 7.0,
+        writing: session.section_scores.writing_band || 6.5,
+        speaking: session.section_scores.speaking_band || 7.0
+      } : { listening: 7.5, reading: 7.0, writing: 6.5, speaking: 7.0 },
+      strongest_skill: "Listening",
+      weakest_skill: "Writing",
+      ai_study_plan_7day: generate7DayStudyPlan("Writing", 6.5),
+      disclaimer: "AI-estimated practice score. Not an official IELTS evaluation."
+    };
+    const overall = effectiveResult.overall_band || 7.0;
+    const skillBands = effectiveResult.skill_bands || { listening: 7.5, reading: 7.0, writing: 6.5, speaking: 7.0 };
+    const studyPlan = effectiveResult.ai_study_plan_7day || generate7DayStudyPlan("Writing", 6.5);
 
     return (
       <div className="max-w-5xl mx-auto space-y-8 py-4">
@@ -1175,7 +1274,7 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
               Calculated using the official IELTS rounding formula (half-band increments).
             </p>
             <div className="text-[11px] text-rose-400/90 font-semibold italic">
-              {examResult.disclaimer || "AI-estimated practice score. Not an official IELTS evaluation."}
+              {effectiveResult.disclaimer || "AI-estimated practice score. Not an official IELTS evaluation."}
             </div>
           </div>
 
@@ -1299,14 +1398,20 @@ export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, initialS
         <div className="flex flex-wrap items-center justify-between gap-4 pt-4">
           <button
             onClick={() => {
+              const nextSet = ((selectedSet || 1) % 3) + 1;
+              setSelectedSet(nextSet);
+              localStorage.setItem("ielts_last_mock_set", String(nextSet));
               setViewState("setup");
               setSession(null);
               setExamResult(null);
+              setSpeakingTurnIndex(0);
+              setTranscriptDraft("");
+              setHighlightedText([]);
             }}
             className="px-6 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-2 transition"
           >
             <RotateCcw className="w-4 h-4" />
-            <span>Take Another Mock Exam</span>
+            <span>Take Another Mock Exam (Next Question Set)</span>
           </button>
 
           <button

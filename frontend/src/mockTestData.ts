@@ -4,6 +4,8 @@
  * authentic Academic and General Training test packages, and 7-day personalized study plans.
  */
 
+import { getClientMockPackageSet2, getClientMockPackageSet3 } from "./mockTestSets";
+
 export function calculateOverallBand(listening: number, reading: number, writing: number, speaking: number): number {
   const scores = [listening, reading, writing, speaking].filter(s => s > 0);
   if (scores.length === 0) return 5.0;
@@ -99,7 +101,14 @@ export function generate7DayStudyPlan(weakestSkill: string, band: number) {
   ];
 }
 
-export function getClientMockPackage(testType: string = "academic", module: string = "full") {
+export function getClientMockPackage(testType: string = "academic", module: string = "full", setId: number = 1) {
+  if (setId === 2) {
+    return getClientMockPackageSet2(testType, module);
+  }
+  if (setId === 3) {
+    return getClientMockPackageSet3(testType, module);
+  }
+
   const isAcademic = testType === "academic";
 
   const listeningSection = {

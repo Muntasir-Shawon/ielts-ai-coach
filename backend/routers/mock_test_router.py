@@ -19,6 +19,7 @@ class StartMockTestRequest(BaseModel):
     test_type: str = Field(default="academic", description="academic | general_training")
     mode: str = Field(default="exam", description="exam | practice")
     module: str = Field(default="full", description="full | listening | reading | writing | speaking")
+    set_id: Optional[int] = Field(default=1, description="Question Test Set (1, 2, 3)")
 
 class AutosaveRequest(BaseModel):
     answers: Dict[str, Any]
@@ -41,7 +42,8 @@ def start_mock_test(
             user=current_user,
             test_type=req.test_type,
             mode=req.mode,
-            module=req.module
+            module=req.module,
+            set_id=req.set_id or 1
         )
         return session_state
     except Exception as e:

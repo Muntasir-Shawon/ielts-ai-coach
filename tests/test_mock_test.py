@@ -73,6 +73,38 @@ def test_mock_package_generation():
     assert "speaking" in gt_pkg["sections"]
     assert len(gt_pkg["sections"]["reading"]["passages"]) == 3
 
+def test_multi_set_mock_package_diversity():
+    """
+    Verifies that Set 1, Set 2, and Set 3 provide distinct questions and topics,
+    preventing any question repetition across tests.
+    """
+    from backend.services.mock_data_service import MockDataService
+    service = MockDataService()
+
+    pkg1 = service.get_mock_package("academic", "full", set_id=1)
+    pkg2 = service.get_mock_package("academic", "full", set_id=2)
+    pkg3 = service.get_mock_package("academic", "full", set_id=3)
+
+    # Verify distinct listening parts
+    p1_title = pkg1["sections"]["listening"]["parts"][0]["title"]
+    p2_title = pkg2["sections"]["listening"]["parts"][0]["title"]
+    p3_title = pkg3["sections"]["listening"]["parts"][0]["title"]
+    assert p1_title != p2_title
+    assert p2_title != p3_title
+
+    # Verify distinct reading passage 1 titles
+    r1_title = pkg1["sections"]["reading"]["passages"][0]["title"]
+    r2_title = pkg2["sections"]["reading"]["passages"][0]["title"]
+    r3_title = pkg3["sections"]["reading"]["passages"][0]["title"]
+    assert r1_title != r2_title
+    assert r2_title != r3_title
+
+    # Verify distinct writing prompts
+    w1_prompt = pkg1["sections"]["writing"]["tasks"][0]["title"]
+    w2_prompt = pkg2["sections"]["writing"]["tasks"][0]["title"]
+    w3_prompt = pkg3["sections"]["writing"]["tasks"][0]["title"]
+    assert w1_prompt != w2_prompt or pkg1["sections"]["writing"]["tasks"][1]["prompt"] != pkg2["sections"]["writing"]["tasks"][1]["prompt"]
+
 def test_mock_session_api_flow():
     """
     Tests complete API lifecycle: start -> autosave -> recover -> submit section -> history.

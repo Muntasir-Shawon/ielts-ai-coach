@@ -1174,7 +1174,8 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
 
   // MOCK TEST SIMULATOR ENDPOINTS FALLBACK
   if (endpoint.includes("/api/mock-tests/start")) {
-    const pkg = getClientMockPackage(body?.test_type || "academic", body?.module || "full");
+    const setId = Number(body?.set_id) || 1;
+    const pkg = getClientMockPackage(body?.test_type || "academic", body?.module || "full", setId);
     const sessionId = `mock_client_${Date.now()}`;
     const initialSection = body?.module === "full" ? "listening" : (body?.module || "listening");
     const durMap: Record<string, number> = { listening: 1800, reading: 3600, writing: 3600, speaking: 840 };
@@ -1187,6 +1188,7 @@ function fallbackMockHandler(endpoint: string, options: RequestInit) {
       test_type: body?.test_type || "academic",
       mode: body?.mode || "exam",
       module: body?.module || "full",
+      set_id: setId,
       status: "in_progress",
       current_section: initialSection,
       current_question_index: 0,

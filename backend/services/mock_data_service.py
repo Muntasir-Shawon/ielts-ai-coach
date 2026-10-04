@@ -7,6 +7,16 @@ import os
 import json
 import csv
 from typing import Dict, Any, List
+from backend.services.mock_test_sets import (
+    build_listening_set_2,
+    build_listening_set_3,
+    build_reading_set_2,
+    build_reading_set_3,
+    build_writing_set_2,
+    build_writing_set_3,
+    build_speaking_set_2,
+    build_speaking_set_3
+)
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "processed")
 
@@ -40,36 +50,45 @@ class MockDataService:
                     })
         return prompts
 
-    def get_mock_package(self, test_type: str = "academic", module: str = "full") -> Dict[str, Any]:
+    def get_mock_package(self, test_type: str = "academic", module: str = "full", set_id: int = 1) -> Dict[str, Any]:
         """
         Builds a comprehensive examination package for Academic or General Training.
+        Supports multiple test sets (set_id=1, 2, 3) to prevent repeating questions.
         """
         package: Dict[str, Any] = {
             "test_type": test_type,
             "module": module,
-            "title": f"Official IELTS {test_type.replace('_', ' ').title()} Mock Examination",
+            "set_id": set_id,
+            "title": f"Official IELTS {test_type.replace('_', ' ').title()} Mock Examination (Set {set_id})",
             "sections": {}
         }
 
         if module in ("full", "listening"):
-            package["sections"]["listening"] = self._build_listening_section()
+            package["sections"]["listening"] = self._build_listening_section(set_id)
 
         if module in ("full", "reading"):
-            package["sections"]["reading"] = self._build_reading_section(test_type)
+            package["sections"]["reading"] = self._build_reading_section(test_type, set_id)
 
         if module in ("full", "writing"):
-            package["sections"]["writing"] = self._build_writing_section(test_type)
+            package["sections"]["writing"] = self._build_writing_section(test_type, set_id)
 
         if module in ("full", "speaking"):
-            package["sections"]["speaking"] = self._build_speaking_section()
+            package["sections"]["speaking"] = self._build_speaking_section(set_id)
 
         return package
 
-    def _build_listening_section(self) -> Dict[str, Any]:
+    def _build_listening_section(self, set_id: int = 1) -> Dict[str, Any]:
         """
         Realistic IELTS Listening: 4 parts, authentic audio cues, questions with form completion,
         multiple choice, sentence completion, and matching.
         """
+        if set_id == 2:
+            return build_listening_set_2()
+        elif set_id == 3:
+            return build_listening_set_3()
+        return self._build_listening_set_1()
+
+    def _build_listening_set_1(self) -> Dict[str, Any]:
         parts = []
         
         # Part 1: Social Dialogue / Form completion
@@ -273,11 +292,18 @@ class MockDataService:
             "parts": parts
         }
 
-    def _build_reading_section(self, test_type: str = "academic") -> Dict[str, Any]:
+    def _build_reading_section(self, test_type: str = "academic", set_id: int = 1) -> Dict[str, Any]:
         """
         Academic: 3 complex academic passages with multi-type question sets.
         General Training: Section 1 everyday notices, Section 2 workplace policies, Section 3 long general text.
         """
+        if set_id == 2:
+            return build_reading_set_2(test_type)
+        elif set_id == 3:
+            return build_reading_set_3(test_type)
+        return self._build_reading_set_1(test_type)
+
+    def _build_reading_set_1(self, test_type: str = "academic") -> Dict[str, Any]:
         if test_type == "academic":
             passages = [
                 {
@@ -634,13 +660,20 @@ class MockDataService:
             "passages": passages
         }
 
-    def _build_writing_section(self, test_type: str = "academic") -> Dict[str, Any]:
+    def _build_writing_section(self, test_type: str = "academic", set_id: int = 1) -> Dict[str, Any]:
         """
         Both Task 1 and Task 2 under a single 60-minute continuous timer.
         Academic Task 1: Data report / chart description (150 words).
         General Training Task 1: Formal / Semi-formal letter (150 words).
         Task 2: Discursive Essay for both (250 words).
         """
+        if set_id == 2:
+            return build_writing_set_2(test_type)
+        elif set_id == 3:
+            return build_writing_set_3(test_type)
+        return self._build_writing_set_1(test_type)
+
+    def _build_writing_set_1(self, test_type: str = "academic") -> Dict[str, Any]:
         if test_type == "academic":
             task_1 = {
                 "task_number": 1,
@@ -696,13 +729,20 @@ class MockDataService:
             "tasks": [task_1, task_2]
         }
 
-    def _build_speaking_section(self) -> Dict[str, Any]:
+    def _build_speaking_section(self, set_id: int = 1) -> Dict[str, Any]:
         """
         Authentic 3-Part Speaking Examiner Simulation:
         Part 1: 3-4 interview questions (introductory familiarity).
         Part 2: Cue card with bullet points, 60-second preparation countdown, 2-minute speech timer.
         Part 3: 4 two-way analytical questions extending Part 2 themes.
         """
+        if set_id == 2:
+            return build_speaking_set_2()
+        elif set_id == 3:
+            return build_speaking_set_3()
+        return self._build_speaking_set_1()
+
+    def _build_speaking_set_1(self) -> Dict[str, Any]:
         return {
             "title": "IELTS Speaking Examination (AI Voice Examiner)",
             "allocated_time_seconds": 840, # ~14 minutes

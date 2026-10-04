@@ -66,13 +66,14 @@ class MockTestEngine:
         user: User,
         test_type: str = "academic",
         mode: str = "exam",
-        module: str = "full"
+        module: str = "full",
+        set_id: int = 1
     ) -> Dict[str, Any]:
         """
         Initializes a mock test session with authoritative start and end timestamps.
         """
         session_id = f"mock_{uuid.uuid4().hex[:12]}"
-        package = self.data_service.get_mock_package(test_type=test_type, module=module)
+        package = self.data_service.get_mock_package(test_type=test_type, module=module, set_id=set_id)
 
         initial_section = "listening" if module == "full" else module
         allocated_secs = SECTION_DURATIONS.get(initial_section, 3600)
